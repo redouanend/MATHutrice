@@ -32,20 +32,20 @@ messages = [  # conversation's list for memory
     {"role": "system", "content": f"Knowledge base :\n{knowledge_base}"},
 ]
 
-print("GenBot est prêt ! Vous pouvez quitter la conversation en tapant exit.")
+print("MathTutrice est prêt ! Vous pouvez quitter la conversation en tapant exit.")
 
-while True:
-    user_input = input("Vous : ")
+# while True:
+#     user_input = input("Vous : ")
 
-    if user_input.lower() == "exit":
-        print("Bye !")
-        break
+#     if user_input.lower() == "exit":
+#         print("Bye !")
+#         break
 
-    messages.append({"role": "user", "content": user_input})
+#     messages.append({"role": "user", "content": user_input})
 
-    response = client.chat.complete(model=MODEL, messages=messages)
+#     response = client.chat.complete(model=MODEL, messages=messages)
 
-    bot_reply = response.choices[0].message.content
-    print("GenBot :", bot_reply, "\n")
+#     bot_reply = response.choices[0].message.content
+#     print("GenBot :", bot_reply, "\n")
 
-    messages.append({"role": "assistant", "content": bot_reply})
+#     messages.append({"role": "assistant", "content": bot_reply})
