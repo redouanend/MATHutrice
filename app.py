@@ -16,7 +16,7 @@ app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.VAPOR],
 )
-app.title = "MathTutrice"
+app.title = "MATHutrice"
 
 # =====================
 # Styles
@@ -56,7 +56,7 @@ BOT_BUBBLE = {
 
 
 WELCOME_MESSAGE = html.Div(
-    "Bonjour 👋 Je suis MathTutrice, votre assistant IA en mathématiques. Posez-moi une question sur n'importe quelle notion !",
+    "Bonjour 👋 Je suis MATHutrice, votre assistant IA en mathématiques. Posez-moi une question sur n'importe quelle notion !",
     style=BOT_BUBBLE,
     # className="mb-3",
 )
@@ -72,7 +72,7 @@ app.layout = dbc.Container(
         dbc.Row(
             dbc.Col(
                 html.H2(
-                    "GenBot. by Génération IA",
+                    "MATHutrice ta tutrice ia",
                     className="text-center",
                     style={
                         "color": "#ffffff",
@@ -98,7 +98,7 @@ app.layout = dbc.Container(
                     dcc.Input(
                         id="user-input",
                         type="text",
-                        placeholder="Posez votre question à MathTutrice...",
+                        placeholder="Posez votre question à MATHutrice...",
                         # className="form-control",
                     ),
                     width=10,
@@ -160,7 +160,7 @@ def user_message(n_clicks, n_submit, user_input, chat_history):
     # message "GenBot écrit..."
     chat_history.append(
         html.Div(
-            "MathTutrice écrit...",
+            "MATHutrice écrit...",
             style={**BOT_BUBBLE, "fontStyle": "italic", "color": "#888"},
             className="mb-3",
             key="typing",
@@ -185,7 +185,8 @@ def bot_response(trigger, chat_history):
 
     response = client.chat.complete(model=MODEL, messages=messages)
     bot_reply = response.choices[0].message.content
-    bot_reply = f"$${bot_reply}$$"  # pour activer MathJax
+    # bot_reply = f"${bot_reply}$"
+    # bot_reply = f"$${bot_reply}$$"  # pour activer MathJax
     messages.append({"role": "assistant", "content": bot_reply})
 
     # retirer "GenBot écrit..."
@@ -193,7 +194,15 @@ def bot_response(trigger, chat_history):
 
     chat_history.append(
         html.Div(
-            dcc.Markdown(bot_reply, mathjax=True, style={"whiteSpace": "pre-wrap", "wordWrap": "break-word","overflowWrap": "break-word"}),
+            dcc.Markdown(
+                bot_reply,
+                mathjax=True,
+                style={
+                    "whiteSpace": "pre-wrap",
+                    "wordWrap": "break-word",
+                    "overflowWrap": "break-word",
+                },
+            ),
             style=BOT_BUBBLE,
             className="mb-3",
         )
