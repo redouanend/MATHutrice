@@ -119,8 +119,7 @@ def ask_question(dict_question):
     for i,choice in enumerate(dict_question["options"],1):
         print(f"{i}. {choice}")
     
-    answer = 0
-    input("Enter the correct answer :").strip()
+    answer = input("Enter the correct answer :").strip()
     return answer == dict_question["answer"]
     
 def main():
