@@ -7,7 +7,7 @@ client = Mistral(api_key=API_KEY)
 MODEL = "mistral-small"
 
 
-# Fonction pour générer le prompt
+# generate a prompt
 def genererate_prompt(notion, niveau, format):
     prompt = f"""
                 Tu es un tuteur de mathématiques pour des étudiants de première année.
@@ -33,10 +33,10 @@ def genererate_prompt(notion, niveau, format):
     return prompt
 
 
-# Listes des notions
+# List of Notions
 notions = ["trigonométrie", "nombres complexes", "fractions"]
 
-# notion sélectionné
+# notions selected
 notion = notions[0]
 
 # niveau de l'éléve (non adaptatif)
@@ -47,21 +47,13 @@ format = """
 {
   "question": "Texte de la question",
   "options": ["A","B","C","D"],
-  "correct_index": 1
+  "answer": 1
 }
 Réponds uniquement avec du JSON valide.
 Ne mets PAS de ```json ni de markdown.
 """
 
-# génération d'un prompt
-prompt = genererate_prompt(notion, niveau, format)
 
-# Appel d'API pour générer l'exercice
-response = client.chat.complete(
-    model=MODEL, messages=[{"role": "user", "content": prompt}]
-)
-
-print(response.choices[0].message.content)
 
 import json
 
@@ -91,7 +83,7 @@ def format_qcm_question(raw_data):
     # Extraction avec valeurs par défaut
     question = raw_data.get("question", "").strip()
     options = raw_data.get("options", [])
-    correct_index = raw_data.get("correct_index", None)
+    correct_index = raw_data.get("answer", None)
 
     # Validation du champ question
     if not question:
@@ -111,7 +103,7 @@ def format_qcm_question(raw_data):
     return {
         "question": question,
         "options": options,
-        "correct_index": correct_index
+        "answer": correct_index
     }
 
 import re
@@ -120,5 +112,36 @@ def clean_json_response(text):
     text = re.sub(r"```json|```", "", text).strip()
     return json.loads(text)
 
-true_response = clean_json_response(response.choices[0].message.content)
-format_qcm = format_qcm_question(true_response)
+
+
+def ask_question(dict_question):
+    print(dict_question["question"])
+    for i,choice in enumerate(dict_question["options"],0):
+        print(f"{i}. {choice}")
+    
+    answer = input("Enter the correct answer :").strip()
+    return answer == dict_question["answer"]
+    
+def main():
+# génération d'un prompt
+    prompt = genererate_prompt(notion, niveau, format)
+
+    # Appel d'API pour générer l'exercice
+    response = client.chat.complete(
+        model=MODEL, messages=[{"role": "user", "content": prompt}]
+    )
+
+    print(response.choices[0].message.content)
+
+    clear_response = clean_json_response(response.choices[0].message.content)
+    dict_qcm = format_qcm_question(clear_response)
+
+    score = 0
+     
+    if ask_question(dict_qcm):
+        print("Correct ! \n")
+        score += score
+    else:
+        print(f"Wrong")
+
+main()
