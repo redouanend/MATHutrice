@@ -7,6 +7,7 @@ client = Mistral(api_key=API_KEY)
 MODEL = "mistral-small"
 
 
+# Fonction pour générer le prompt
 def genererate_prompt(notion, niveau, format):
     prompt = f"""
                 Tu es un tuteur de mathématiques pour des étudiants de première année.
@@ -30,9 +31,16 @@ def genererate_prompt(notion, niveau, format):
     return prompt
 
 
+# Listes des notions
 notions = ["trigonométrie", "nombres complexes", "fractions"]
+
+# notion sélectionné
 notion = notions[0]
+
+# niveau de l'éléve (non adaptatif)
 niveau = "intermédiaire"
+
+# format de question
 format = """
 {
   "question": "Texte de la question",
@@ -41,8 +49,10 @@ format = """
 }
 """
 
+# génération d'un prompt
 prompt = genererate_prompt(notion, niveau, format)
 
+# Appel d'API pour générer l'exercice
 response = client.chat.complete(
     model=MODEL, messages=[{"role": "user", "content": prompt}]
 )
