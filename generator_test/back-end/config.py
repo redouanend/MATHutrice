@@ -43,7 +43,7 @@ niveau = "intermédiaire"
 
 # format de question
 formats = [
-    """
+            """
             {
             "question": "Texte de la question",
             "options": ["A","B","C","D"],
@@ -53,8 +53,21 @@ formats = [
             La bonne reponse est dans les options
             answer est lier à la position de la bonne reponse
             Ne mets PAS de ```json ni de markdown.
+            """,
             """
-]
+            {
+            "question": "Texte de la question",
+            "correct_answer": ["réponse à la question"],
+            }
+            """,
+            """
+            {
+            "enoncé" : ["Texte de la question"]
+            "question": ["Question de la étape 1","Question de la étape 2",...,"Question de la étape n (selon nombre d'étape extremement détaillé pour détecter ou est l'erreur pour résoudre)"],
+            "correct_answer": ["Réponse à l'étape 1","Réponse à l'étape 2",...,"n"],
+            }
+            """
+            ]
 
 
 format = formats[0]
