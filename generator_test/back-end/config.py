@@ -27,8 +27,7 @@ def genererate_prompt(notion, niveau, format):
 
                 Important :
                 Réponds uniquement avec le format.
-                Réponds uniquement avec du JSON valide.
-                Ne mets PAS de ```json ni de markdown.
+                format json
                 """
     return prompt
 
@@ -43,30 +42,36 @@ notion = notions[0]
 niveau = "intermédiaire"
 
 # format de question
-format = """
-{
-  "question": "Texte de la question",
-  "options": ["A","B","C","D"],
-  "answer": 1
-}
-Réponds uniquement avec du JSON valide.
-Ne mets PAS de ```json ni de markdown.
-"""
+formats = [
+    """
+            {
+            "question": "Texte de la question",
+            "options": ["A","B","C","D"],
+            "answer": position bonne option 
+            }
+            Réponds uniquement avec du JSON valide.
+            La bonne reponse est dans les options
+            answer est lier à la position de la bonne reponse
+            Ne mets PAS de ```json ni de markdown.
+            """
+]
 
 
+format = formats[0]
 
 import json
+
 
 def format_qcm_question(raw_data):
     """
     Formate et valide une question de QCM générée par un chatbot/API.
-    
+
     Paramètres:
         raw_data (dict | str): Données brutes reçues (dict ou JSON string).
-    
+
     Retour:
         dict: Question formatée avec clés 'question', 'options', 'correct_index'.
-    
+
     Exceptions:
         ValueError: Si le format est invalide.
     """
@@ -100,30 +105,28 @@ def format_qcm_question(raw_data):
         raise ValueError("L'index de la bonne réponse est invalide.")
 
     # Retour du format imposé
-    return {
-        "question": question,
-        "options": options,
-        "answer": correct_index
-    }
+    return {"question": question, "options": options, "answer": correct_index}
+
 
 import re
+
 
 def clean_json_response(text):
     text = re.sub(r"```json|```", "", text).strip()
     return json.loads(text)
 
 
-
 def ask_question(dict_question):
     print(dict_question["question"])
-    for i,choice in enumerate(dict_question["options"],1):
+    for i, choice in enumerate(dict_question["options"], 0):
         print(f"{i}. {choice}")
-    
-    answer = input("Enter the correct answer :").strip()
+
+    answer = int(input("Enter the correct answer :").strip())
     return answer == dict_question["answer"]
-    
+
+
 def main():
-# génération d'un prompt
+    # génération d'un prompt
     prompt = genererate_prompt(notion, niveau, format)
 
     # Appel d'API pour générer l'exercice
@@ -137,11 +140,12 @@ def main():
     dict_qcm = format_qcm_question(clear_response)
 
     score = 0
-     
+
     if ask_question(dict_qcm):
         print("Correct ! \n")
         score += score
     else:
         print(f"Wrong")
+
 
 main()
