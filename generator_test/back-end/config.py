@@ -21,12 +21,16 @@ def genererate_prompt(notion, niveau, format):
                 - Une seule bonne réponse
                 - 4 propositions
                 - aucun texte en dehors du format
+                
 
                 Format:
                 {format}
 
                 Important :
                 Réponds uniquement avec le format.
+                - Réponds uniquement avec le JSON brut.
+                - N'utilise pas de bloc markdown.
+                - Ne mets pas ```json.
                 """
     return prompt
 
@@ -38,16 +42,34 @@ notions = ["trigonométrie", "nombres complexes", "fractions"]
 notion = notions[0]
 
 # niveau de l'éléve (non adaptatif)
-niveau = "intermédiaire"
+niveaux = ["facile", "intermédiaire", "avancé"]
+niveau = niveaux[1]
 
 # format de question
-format = """
+formats = [
+    """
 {
   "question": "Texte de la question",
   "options": ["A","B","C","D"],
   "correct_index": 1
 }
-"""
+""",
+    """
+{
+  "question": "Texte de la question",
+  "correct_answer": ["réponse à la question"],
+}
+""",
+    """
+{
+  "enoncé" : ["Texte de la question"]
+  "question": ["Question de la étape 1","Question de la étape 2",...,"Question de la étape n (selon nombre d'étape extremement détaillé pour détecter ou est l'erreur pour résoudre)"],
+  "correct_answer": ["Réponse à l'étape 1","Réponse à l'étape 2",...,"n"],
+}
+""",
+]
+
+format = formats[2]
 
 # génération d'un prompt
 prompt = genererate_prompt(notion, niveau, format)
