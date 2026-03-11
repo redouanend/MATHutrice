@@ -1,3 +1,4 @@
+#test_franklin
 from mistralai import Mistral
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
@@ -47,25 +48,14 @@ formats = [
             {
             "question": "Texte de la question",
             "options": ["A","B","C","D"],
-            "answer": position bonne option 
+            "answer": "bonne réponse exacte"
             }
-            Réponds uniquement avec du JSON valide.
-            La bonne reponse est dans les options
-            answer est lier à la position de la bonne reponse
-            Ne mets PAS de ```json ni de markdown.
-            """,
-            """
-            {
-            "question": "Texte de la question",
-            "correct_answer": ["réponse à la question"],
-            }
-            """,
-            """
-            {
-            "enoncé" : ["Texte de la question"]
-            "question": ["Question de la étape 1","Question de la étape 2",...,"Question de la étape n (selon nombre d'étape extremement détaillé pour détecter ou est l'erreur pour résoudre)"],
-            "correct_answer": ["Réponse à l'étape 1","Réponse à l'étape 2",...,"n"],
-            }
+
+            Contraintes :
+            - answer doit être exactement identique à une option
+            - une seule bonne réponse
+            - 4 options
+            - JSON uniquement
             """
             ]
 
@@ -131,11 +121,13 @@ def clean_json_response(text):
 
 def ask_question(dict_question):
     print(dict_question["question"])
-    for i, choice in enumerate(dict_question["options"], 0):
+    for i, choice in enumerate(dict_question["options"], 1):
         print(f"{i}. {choice}")
+        if(dict_question[choice]==dict_question["answer"]):
+            index = i
 
-    answer = int(input("Enter the correct answer :").strip())
-    return answer == dict_question["answer"]
+    answer_user = int(input("Enter the correct answer :").strip())
+    return answer_user == index
 
 
 def main():
@@ -158,7 +150,7 @@ def main():
         print("Correct ! \n")
         score += score
     else:
-        print(f"Wrong")
+        print("Wrong")
 
 
 main()
