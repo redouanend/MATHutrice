@@ -1,3 +1,4 @@
+import json
 from mistralai import Mistral
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
@@ -9,26 +10,32 @@ MODEL = "mistral-small"
 
 # generate a prompt
 def genererate_prompt(notion, niveau, format):
-    prompt = f"""
-                Tu es un tuteur de mathématiques pour des étudiants de première année.
+    prompt = prompt = f"""
+                Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 
-                Génère un QCM de mathématiques.
+                Ta tâche est de générer un exercice de mathématiques.
 
-                Notion : {notion}
-                Niveau : {niveau}
+                Informations :
+                - Notion : {notion}
+                - Niveau : {niveau}
 
-                Contraintes :
-                - Une seule bonne réponse
-                - 4 propositions
-                - aucun texte en dehors du format
+                Contraintes pédagogiques :
+                - L'exercice doit être adapté au niveau demandé.
+                - L'énoncé doit être clair et sans ambiguïté.
+                - Les calculs doivent être mathématiquement corrects.
+                - Utilise un vocabulaire simple et pédagogique.
 
-                Format:
+                Règles de sortie (très important) :
+                - Réponds uniquement avec un JSON valide.
+                - N'ajoute aucun texte avant ou après le JSON.
+                - N'utilise pas de markdown.
+                - N'utilise pas de balises ```json.
+
+                Format attendu :
                 {format}
 
                 Important :
-                Réponds uniquement avec le format.
-                Réponds uniquement avec du JSON valide.
-                Ne mets PAS de ```json ni de markdown.
+                Réponds uniquement avec le JSON correspondant au format.
                 """
     return prompt
 
@@ -40,33 +47,91 @@ notions = ["trigonométrie", "nombres complexes", "fractions"]
 notion = notions[0]
 
 # niveau de l'éléve (non adaptatif)
-niveau = "intermédiaire"
+niveau = "facile"
 
 # format de question
-format = """
-{
-  "question": "Texte de la question",
-  "options": ["A","B","C","D"],
-  "answer": 1
-}
-Réponds uniquement avec du JSON valide.
-Ne mets PAS de ```json ni de markdown.
-"""
+formats = [
+    # 1. QCM
+    """
+        {
+        "question": "Texte de la question",
+        "options": ["rép1", "rép2", "rép3", "rép4"],
+        "answer": 0
+        }
+
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "options" doit contenir exactement 4 propositions.
+        - "answer" est l'index de la bonne réponse dans "options".
+        - "answer" doit être un entier entre 0 et 3.
+        - Une seule réponse est correcte.
+        - La bonne réponse doit être présente dans "options".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+    # 2. Réponse directe
+    """
+        {
+        "question": "Texte de la question",
+        "correct_answer": "réponse à la question"
+        }
+
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "question" doit être une chaîne non vide.
+        - "correct_answer" doit être une chaîne non vide.
+        - Ne génère pas "options".
+        - Ne génère pas "answer".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+    # 3. Exercice par étapes
+    """
+        {
+        "enonce": "Texte de l'énoncé",
+        "questions": [
+            "Question de l'étape 1",
+            "Question de l'étape 2",
+            "Question de l'étape 3"
+        ],
+        "correct_answers": [
+            "Réponse à l'étape 1",
+            "Réponse à l'étape 2",
+            "Réponse à l'étape 3"
+        ]
+        }
+
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "enonce" doit être une chaîne non vide.
+        - "questions" doit être une liste de chaînes non vides.
+        - "correct_answers" doit être une liste de chaînes non vides.
+        - "questions" et "correct_answers" doivent avoir exactement la même longueur.
+        - Les étapes doivent être détaillées et suivre un ordre logique de résolution.
+        - Ne génère pas "options".
+        - Ne génère pas "answer".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+]
 
 
+format = formats[0]
 
-import json
 
 def format_qcm_question(raw_data):
     """
     Formate et valide une question de QCM générée par un chatbot/API.
-    
+
     Paramètres:
         raw_data (dict | str): Données brutes reçues (dict ou JSON string).
-    
+
     Retour:
         dict: Question formatée avec clés 'question', 'options', 'correct_index'.
-    
+
     Exceptions:
         ValueError: Si le format est invalide.
     """
@@ -100,30 +165,28 @@ def format_qcm_question(raw_data):
         raise ValueError("L'index de la bonne réponse est invalide.")
 
     # Retour du format imposé
-    return {
-        "question": question,
-        "options": options,
-        "answer": correct_index
-    }
+    return {"question": question, "options": options, "answer": correct_index}
+
 
 import re
+
 
 def clean_json_response(text):
     text = re.sub(r"```json|```", "", text).strip()
     return json.loads(text)
 
 
-
 def ask_question(dict_question):
     print(dict_question["question"])
-    for i,choice in enumerate(dict_question["options"],1):
-        print(f"{i}. {choice}")
-    
-    answer = input("Enter the correct answer :").strip()
+    for i, choice in enumerate(dict_question["options"], 0):
+        print(f"{i + 1}. {choice}")
+
+    answer = int(input("Enter the correct answer :").strip())
     return answer == dict_question["answer"]
-    
+
+
 def main():
-# génération d'un prompt
+    # génération d'un prompt
     prompt = genererate_prompt(notion, niveau, format)
 
     # Appel d'API pour générer l'exercice
@@ -137,11 +200,12 @@ def main():
     dict_qcm = format_qcm_question(clear_response)
 
     score = 0
-     
+
     if ask_question(dict_qcm):
         print("Correct ! \n")
         score += score
     else:
         print(f"Wrong")
+
 
 main()
