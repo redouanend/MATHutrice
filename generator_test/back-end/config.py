@@ -1,5 +1,8 @@
 #test_franklin
+
 from mistralai import Mistral
+import json
+import re
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
 
@@ -69,6 +72,8 @@ formats = [
 
 format = formats[0]
 
+import json
+
 
 def format_qcm_question(raw_data):
     """
@@ -116,7 +121,7 @@ def format_qcm_question(raw_data):
     return {"question": question, "options": options, "answer": correct_index}
 
 
-import re
+
 
 
 def clean_json_response(text):
