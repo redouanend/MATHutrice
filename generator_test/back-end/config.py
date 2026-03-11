@@ -10,25 +10,32 @@ MODEL = "mistral-small"
 
 # generate a prompt
 def genererate_prompt(notion, niveau, format):
-    prompt = f"""
-                Tu es un tuteur de mathématiques pour des étudiants de première année.
+    prompt = prompt = f"""
+                Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 
-                Génère un QCM de mathématiques.
+                Ta tâche est de générer un exercice de mathématiques.
 
-                Notion : {notion}
-                Niveau : {niveau}
+                Informations :
+                - Notion : {notion}
+                - Niveau : {niveau}
 
-                Contraintes :
-                - Une seule bonne réponse
-                - 4 propositions
-                - aucun texte en dehors du format
+                Contraintes pédagogiques :
+                - L'exercice doit être adapté au niveau demandé.
+                - L'énoncé doit être clair et sans ambiguïté.
+                - Les calculs doivent être mathématiquement corrects.
+                - Utilise un vocabulaire simple et pédagogique.
 
-                Format:
+                Règles de sortie (très important) :
+                - Réponds uniquement avec un JSON valide.
+                - N'ajoute aucun texte avant ou après le JSON.
+                - N'utilise pas de markdown.
+                - N'utilise pas de balises ```json.
+
+                Format attendu :
                 {format}
 
                 Important :
-                Réponds uniquement avec le format.
-                format json
+                Réponds uniquement avec le JSON correspondant au format.
                 """
     return prompt
 
@@ -40,7 +47,7 @@ notions = ["trigonométrie", "nombres complexes", "fractions"]
 notion = notions[0]
 
 # niveau de l'éléve (non adaptatif)
-niveau = "intermédiaire"
+niveau = "facile"
 
 # format de question
 formats = [
@@ -61,8 +68,6 @@ formats = [
 
 
 format = formats[0]
-
-import json
 
 
 def format_qcm_question(raw_data):

@@ -1,0 +1,29 @@
+/* mise en forme des boutons */
+
+.content_button {
+    background-color: rgba(63, 98, 99, 0.153);
+    height: 800px;
+}
+
+.wrap_button {
+    display: flex;
+    gap: 40px;
+    padding: 300px 10% 0 10%;
+}
+
+
+
+.notion {
+    border-radius: 15px;
+    background: linear-gradient(130deg, rgb(231, 109, 109), rgba(119, 19, 225, 0.629), rgb(243, 238, 238));
+    padding: 50px 40px;
+    font-size: 3.5em;
+    color: white;
+}
+
+
+
+button:hover {
+    background: linear-gradient(130deg, rgb(128, 128, 128), rgb(255, 255, 255), rgb(223, 9, 251));
+    cursor: pointer;
+}

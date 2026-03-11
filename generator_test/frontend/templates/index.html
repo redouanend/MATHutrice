@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator_test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/index.css') }}">
+</head>
+
+<body>
+    <main>
+        <!-- Création de la structure des 3 boutons -->
+        <div class="content_button_notion">
+
+            <div class="wrap_button">
+                <button class="notion">Nombre complexe</button>
+                <button class="notion">Trigonométrie</button>
+                <button class="notion">Fraction</button>
+            </div>
+
+            <!-- Envoi de la requête avec la notion (contenu du bouton) au backend déclenché par un click sur un des boutons -->
+            <script>
+                document.addEventListener("click", function (event) {
+
+                    if (event.target.classList.contains("notion")) {
+                        let selectedNotion = event.target.textContent;
+                        // alert(selectedNotion) (test)
+
+                        fetch("/generate_exo", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ notion: selectedNotion })
+                        });
+                    }
+                });
+
+            </script>
+        </div>
+    </main>
+
+
+
+</body>
+
+</html>
