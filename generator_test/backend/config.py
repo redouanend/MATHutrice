@@ -50,24 +50,74 @@ notions = ["trigonométrie", "nombres complexes", "fractions"]
 notion = notions[0]
 
 # niveau de l'éléve (non adaptatif)
-niveau = "facile"
+niveau = "intermédaire"
 
 # format de question
 formats = [
-            """
-            {
-            "question": "Texte de la question",
-            "options": ["A","B","C","D"],
-            "answer": "bonne réponse exacte"
-            }
+    # 1. QCM
+    """
+        {
+        "question": "Texte de la question",
+        "options": ["rép1", "rép2", "rép3", "rép4"],
+        "answer": "bonne reponse exacte""
+        }
 
-            Contraintes :
-            - answer doit être exactement identique à une option
-            - une seule bonne réponse
-            - 4 options
-            - JSON uniquement
-            """
-            ]
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "options" doit contenir exactement 4 propositions.
+        - Une seule réponse est correcte.
+        - La bonne réponse doit être présente dans "options".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+    # 2. Réponse directe
+    """
+        {
+        "question": "Texte de la question",
+        "correct_answer": "réponse à la question"
+        }
+
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "question" doit être une chaîne non vide.
+        - "correct_answer" doit être une chaîne non vide.
+        - Ne génère pas "options".
+        - Ne génère pas "answer".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+    # 3. Exercice par étapes
+    """
+        {
+        "enonce": "Texte de l'énoncé",
+        "questions": [
+            "Question de l'étape 1",
+            "Question de l'étape 2",
+            "Question de l'étape 3"
+        ],
+        "correct_answers": [
+            "Réponse à l'étape 1",
+            "Réponse à l'étape 2",
+            "Réponse à l'étape 3"
+        ]
+        }
+
+        Règles spécifiques :
+        - Réponds uniquement avec un JSON valide.
+        - "enonce" doit être une chaîne non vide.
+        - "questions" doit être une liste de chaînes non vides.
+        - "correct_answers" doit être une liste de chaînes non vides.
+        - "questions" et "correct_answers" doivent avoir exactement la même longueur.
+        - Les étapes doivent être détaillées et suivre un ordre logique de résolution.
+        - Ne génère pas "options".
+        - Ne génère pas "answer".
+        - Ne mets aucun texte hors JSON.
+        - Ne mets pas de markdown.
+        - Ne mets pas de ```json.
+        """,
+]
 
 
 format = formats[0]
@@ -113,9 +163,9 @@ def format_qcm_question(raw_data):
     if not all(isinstance(opt, str) and opt.strip() for opt in options):
         raise ValueError("Toutes les options doivent être des chaînes non vides.")
 
-    # Validation de l'index correct
-    if not isinstance(correct_index, int) or not (0 <= correct_index < len(options)):
-        raise ValueError("L'index de la bonne réponse est invalide.")
+    # # Validation de l'index correct
+    # if not isinstance(correct_index, int):
+    #     raise ValueError("L'index de la bonne réponse est invalide.")
 
     # Retour du format imposé
     return {"question": question, "options": options, "answer": correct_index}
@@ -130,14 +180,17 @@ def clean_json_response(text):
 
 
 def ask_question(dict_question):
+
     print(dict_question["question"])
+
     for i, choice in enumerate(dict_question["options"], 1):
         print(f"{i}. {choice}")
-        if(dict_question[choice]==dict_question["answer"]):
-            index = i
 
-    answer_user = int(input("Enter the correct answer :").strip())
-    return answer_user == index
+    answer_user = int(input("Enter your answer: ").strip())
+
+    selected_option = dict_question["options"][answer_user - 1]
+
+    return selected_option == dict_question["answer"]
 
 
 def main():
