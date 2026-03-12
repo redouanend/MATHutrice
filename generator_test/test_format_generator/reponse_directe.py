@@ -152,6 +152,7 @@ def main():
     response = client.chat.complete(
         model=MODEL,
         messages=[{"role": "user", "content": prompt}]
+        
     )
 
     llm_text = response.choices[0].message.content
