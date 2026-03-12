@@ -1,5 +1,7 @@
 import json
 from mistralai import Mistral
+import re
+
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
 
@@ -9,7 +11,7 @@ MODEL = "mistral-small"
 
 
 # generate a prompt
-def genererate_prompt(notion, niveau, format):
+def genererate_prompt(notion, format, niveau="intermédiare"):
     prompt = prompt = f"""
                 Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 
@@ -166,9 +168,6 @@ def format_qcm_question(raw_data):
     return {"question": question, "options": options, "answer": correct_index}
 
 
-import re
-
-
 def clean_json_response(text):
     text = re.sub(r"```json|```", "", text).strip()
     return json.loads(text)
@@ -211,4 +210,5 @@ def main():
         print(f"Wrong")
 
 
-main()
+if __name__ == "__main__":
+    main()
