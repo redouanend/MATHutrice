@@ -41,7 +41,7 @@ json.
                 """
     return prompt
 
-
+print("hello")
 # List of Notions
 notions = ["trigonométrie", "nombres complexes", "fractions"]
 
@@ -58,7 +58,7 @@ formats = [
         {
         "question": "Texte de la question",
         "options": ["rép1", "rép2", "rép3", "rép4"],
-        "answer": 0
+        "answer": "bonne reponse exacte"
         }
 
         Règles spécifiques :

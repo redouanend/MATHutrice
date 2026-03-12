@@ -1,7 +1,13 @@
-import json
+#test_franklin
+
 from mistralai import Mistral
+<<<<<<< HEAD:generator_test/test_format_generator/main.py
 import re
 
+=======
+import json
+import re
+>>>>>>> d5d732fa49628d9a85f3b6ec2ddd792faf6d286a:generator_test/backend/config.py
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
 
@@ -121,6 +127,8 @@ formats = [
 
 format = formats[0]
 
+import json
+
 
 def format_qcm_question(raw_data):
     """
@@ -168,6 +176,12 @@ def format_qcm_question(raw_data):
     return {"question": question, "options": options, "answer": correct_index}
 
 
+<<<<<<< HEAD:generator_test/test_format_generator/main.py
+=======
+
+
+
+>>>>>>> d5d732fa49628d9a85f3b6ec2ddd792faf6d286a:generator_test/backend/config.py
 def clean_json_response(text):
     text = re.sub(r"```json|```", "", text).strip()
     return json.loads(text)
@@ -207,7 +221,7 @@ def main():
         print("Correct ! \n")
         score += score
     else:
-        print(f"Wrong")
+        print("Wrong")
 
 
 if __name__ == "__main__":
