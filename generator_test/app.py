@@ -1,63 +1,30 @@
-from flask import Flask, render_template, request, jsonify
-from generator_test.test_format_generator.main import genererate_prompt
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import uvicorn
+from pydantic import BaseModel
 
-app = Flask(__name__)
+app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="generator_test/static"), name="static")
+
+templates = Jinja2Templates(directory="generator_test/templates")
 
 
-# Route vers le page html qui affiche les bouttons
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("index.html")
+@app.get("/", include_in_schema=True)
+async def page_home(request: Request):
+    return templates.TemplateResponse(request, "index.html")
+
+
+class Data(BaseModel):
+    notion: str
 
 
 # Récupération de la requête contenant le nom de la notion (envoyer par le frontend)
-@app.route("/generate_exo", methods=["POST", "GET"])
-def get_notion():
-
-    result = request.get_json()
-    notion = result["notion"]
-
-    # Test que Jiro a fait (temporaire)
-    format = """ {"question": "Texte de la question", "options": ["rép1", "rép2", "rép3", "rép4"],"answer": "bonne reponse exacte""}
-        Règles spécifiques :
-        - Réponds uniquement avec un JSON valide.
-        - "options" doit contenir exactement 4 propositions.
-        - Une seule réponse est correcte.
-        - La bonne réponse doit être présente dans "options".
-        - Ne mets aucun texte hors JSON.
-        - Ne mets pas de markdown.
-        - Ne mets pas de ```json.
-        """
-
-    print(
-        genererate_prompt(
-            notion,
-            format,
-        )
-    )
-
-    # Fin du test
-
-    # Il faut renvoyer un statut de la requête au frontend pour confirmer si tout s'est bien passé ou pas
-    return jsonify({"status": "ok"}), 200
+@app.post("/generate_exo", include_in_schema=True)
+async def get_notion(data: Data):
+    print(data.notion)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-# from fastapi import FastAPI, Request
-# from fastapi.responses import HTMLResponse
-# from fastapi.staticfiles import StaticFiles
-# from fastapi.templating import Jinja2Templates
-
-# app = FastAPI()
-
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# templates = Jinja2Templates(directory="/templates")
-
-# @app.get("/")
-# async def root():
-#     def home():
-#     return render_template("index.html")
+uvicorn.run(app, host="localhost", port=8000)
