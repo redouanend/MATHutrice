@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATHutrice — Module</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple-dark: #542365;
+    --purple-light: #8c52f0;
+    --pink-soft: #f8abe0;
+    --red-main: #ca1328;
+    --red-coral: #ff5757;
+    --pink-hot: #cb0a67;
+    --bg: #fdf5fb;
+    --white: #ffffff;
+    --text-dark: #1a0a20;
+    --text-muted: #7a5a85;
+    --text-light: #b89ec5;
+    --border: rgba(84,35,101,0.12);
+    --shadow: 0 4px 24px rgba(84,35,101,0.08);
+    --shadow-hover: 0 8px 40px rgba(140,82,240,0.18);
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, var(--purple-dark) 0%, #7a1a5c 50%, var(--pink-hot) 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    background: rgba(248,171,224,0.15);
+    border-radius: 50%;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 20%;
+    width: 180px; height: 180px;
+    background: rgba(140,82,240,0.2);
+    border-radius: 50%;
+  }
+  .header-inner {
+    position: relative; z-index: 1;
+    padding: 28px 40px 32px;
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px; font-weight: 500;
+    text-decoration: none;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 7px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 28px;
+    display: inline-flex;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+  .back-btn svg { width: 14px; height: 14px; }
+
+  
+  .module-title {
+    font-size: 42px; font-weight: 800;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .module-subtitle {
+    font-size: 15px; font-weight: 400;
+    color: rgba(255,255,255,0.75);
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  /* Progress bar header */
+  .progress-header {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(0,0,0,0.15);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    backdrop-filter: blur(10px);
+  }
+  .progress-info { flex: 1; }
+  .progress-label {
+    font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500;
+    margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+  }
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.15);
+    border-radius: 30px;
+    height: 8px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    background: linear-gradient(90deg, var(--pink-soft), var(--purple-light));
+    height: 100%;
+    border-radius: 30px;
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+  .progress-pct {
+    font-size: 22px; font-weight: 700; color: white;
+    min-width: 52px; text-align: right;
+  }
+
+  /* ── MAIN ── */
+  .main { padding: 40px 40px 80px; max-width: 900px; margin: 0 auto; }
+
+  /* ── DESCRIPTION ── */
+  .desc-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow);
+  }
+  .desc-card p { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+  .desc-card p strong { color: var(--purple-dark); font-weight: 600; }
+
+  /* ── SECTION TITLE ── */
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .section-icon.history { background: linear-gradient(135deg, #f8abe0, #cb0a67); }
+  .section-icon.train { background: linear-gradient(135deg, #8c52f0, #542365); }
+  .section-title-text h2 { font-size: 19px; font-weight: 700; color: var(--text-dark); }
+  .section-title-text p { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+  /* ── HISTORIQUE ── */
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+  .history-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 8px;
+    transition: all 0.2s;
+  }
+  .history-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .hist-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .hist-name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+  .hist-score {
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 30px;
+  }
+  .hist-score.good { background: #edf7ed; color: #2a7a2a; }
+  .hist-score.medium { background: #fff8e6; color: #a06800; }
+  .hist-score.bad { background: #fdecea; color: #b01c1c; }
+  .hist-meta { font-size: 11px; color: var(--text-light); }
+  .hist-mini-bar {
+    background: #f0e8f7; border-radius: 4px; height: 5px; overflow: hidden;
+  }
+  .hist-mini-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--pink-hot), var(--purple-light));
+  }
+
+  /* ── S'ENTRAINER ── */
+  .train-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill);
+    gap: 16px;
+    margin-bottom: 44px;
+  }
+  .train-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .train-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%;
+    border-radius: 0;
+  }
+  .train-card.qcm::before { background: linear-gradient(180deg, var(--purple-light), var(--purple-dark)); }
+  .train-card.redaction::before { background: linear-gradient(180deg, var(--pink-hot), var(--red-main)); }
+  .train-card.flash::before { background: linear-gradient(180deg, var(--red-coral), var(--pink-hot)); }
+  .train-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: rgba(140,82,240,0.25); }
+  .train-card:active { transform: translateY(-1px); }
+  .train-type-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px;
+    margin-bottom: 12px; display: inline-block;
+  }
+  .badge-qcm { background: #f0eafe; color: var(--purple-dark); }
+  .badge-redaction { background: #fde8f3; color: var(--pink-hot); }
+  .badge-flash { background: #ffe8e8; color: var(--red-main); }
+  .train-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark); }
+  .train-card p { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px; }
+  .train-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-light); }
+  .train-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-light); }
+
+  /* ── QCM MODAL ── */
+  .qcm-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,4,30,0.65);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .qcm-overlay.open { display: flex; }
+  .qcm-modal {
+    background: var(--white);
+    border-radius: 24px;
+    width: 100%; max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(84,35,101,0.3);
+    animation: slideUp 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .qcm-modal-header {
+    background: linear-gradient(135deg, var(--purple-dark), var(--pink-hot));
+    padding: 24px 28px 20px;
+    border-radius: 24px 24px 0 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .qcm-modal-header h2 { font-size: 18px; font-weight: 700; color: white; }
+  .qcm-modal-header p { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px; }
+  .qcm-close {
+    background: rgba(255,255,255,0.2);
+    border: none; border-radius: 50%;
+    width: 34px; height: 34px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .qcm-close:hover { background: rgba(255,255,255,0.35); }
+  .qcm-body { padding: 28px; }
+
+  .qcm-loading {
+    text-align: center; padding: 40px 20px;
+    color: var(--text-muted); font-size: 14px;
+  }
+  .qcm-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--purple-light);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .qcm-question-num {
+    font-size: 12px; font-weight: 600; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+  .qcm-question-text {
+    font-size: 17px; font-weight: 600; color: var(--text-dark);
+    line-height: 1.55; margin-bottom: 22px;
+  }
+  .qcm-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .qcm-option {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 18px;
+    cursor: pointer;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-dark);
+    transition: all 0.18s;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--white);
+  }
+  .qcm-option:hover:not(.selected):not(.correct):not(.wrong) {
+    border-color: var(--purple-light);
+    background: #f9f3ff;
+  }
+  .qcm-option.selected { border-color: var(--purple-light); background: #f0eafe; color: var(--purple-dark); }
+  .qcm-option.correct { border-color: #2a7a2a; background: #edf7ed; color: #1a5a1a; }
+  .qcm-option.wrong { border-color: var(--red-main); background: #fdecea; color: #8a1010; }
+  .opt-letter {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: rgba(140,82,240,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--purple-light);
+    flex-shrink: 0;
+  }
+  .qcm-option.correct .opt-letter { background: #d0ead0; color: #2a7a2a; }
+  .qcm-option.wrong .opt-letter { background: #f7d0d0; color: #b01c1c; }
+
+  .qcm-feedback {
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    font-size: 13px; line-height: 1.6;
+    margin-bottom: 20px; display: none;
+  }
+  .qcm-feedback.correct { background: #edf7ed; color: #1a5a1a; border-left: 4px solid #2a7a2a; }
+  .qcm-feedback.wrong { background: #fdecea; color: #8a1010; border-left: 4px solid var(--red-main); }
+  .qcm-feedback.show { display: block; }
+
+  .qcm-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .qcm-score-mini { font-size: 13px; color: var(--text-muted); }
+  .qcm-score-mini strong { color: var(--purple-dark); font-weight: 700; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple-light), var(--purple-dark));
+    color: white; border: none;
+    padding: 11px 26px; border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(140,82,240,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(140,82,240,0.45); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── RÉSULTATS ── */
+  .results-panel {
+    text-align: center; padding: 20px 0;
+  }
+  .results-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-light), var(--pink-hot));
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 32px rgba(140,82,240,0.3);
+  }
+  .results-circle .score-num { font-size: 30px; font-weight: 800; color: white; }
+  .results-circle .score-total { font-size: 12px; color: rgba(255,255,255,0.8); }
+  .results-panel h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .results-panel p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+  .results-btns { display: flex; gap: 12px; justify-content: center; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--purple-dark);
+    border: 1.5px solid var(--purple-light);
+    padding: 10px 22px; border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: #f0eafe; }
+
+  /* ── MINI PROGRESS CARDS ── */
+  .module-progress-section { margin-bottom: 44px; }
+  .progress-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .prog-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .prog-card-top { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .prog-card-name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+  .prog-card-pct { font-size: 13px; font-weight: 700; color: var(--purple-light); }
+  .prog-card-bar { background: #f0e8f7; border-radius: 4px; height: 6px; overflow: hidden; }
+  .prog-card-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--pink-hot), var(--purple-light));
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+
+  @media (max-width: 600px) {
+    .header-inner { padding: 20px; }
+    .module-title { font-size: 28px; }
+    .main { padding: 24px 20px 60px; }
+    .train-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-inner">
+    <a class="back-btn" onclick="history.back()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 3L5 8l5 5"/>
+      </svg>
+      Retour aux modules
+    </a>
+
+    <h1 class="module-title" id="moduleTitle">Trigonométrie</h1>
+    <p class="module-subtitle">Maîtrisez les fonctions sin, cos et tan, les identités remarquables et leurs applications en géométrie et analyse.</p>
+
+    <div class="progress-header">
+      <div class="progress-info">
+        <div class="progress-label">
+          <span>Progression globale du module</span>
+          <span id="progressText">0 / 10 activités</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="mainProgressBar"></div>
+        </div>
+      </div>
+      <div class="progress-pct" id="mainProgressPct">0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Description -->
+  <div class="desc-card">
+    <p>Ce module couvre les <strong>bases de la trigonométrie</strong> nécessaires en première année de licence. Vous y trouverez des exercices progressifs : QCM pour tester vos connaissances, exercices de rédaction pour l'approfondissement, et flash-cards pour mémoriser rapidement les formules clés. Chaque activité contribue à votre progression et vous permet d'identifier vos points faibles.</p>
+  </div>
+  <!-- S'entraîner -->
+  <div class="section-header">
+    <div class="section-icon train">🎯</div>
+    <div class="section-title-text">
+      <h2>S'entraîner</h2>
+      <p>Choisissez un type d'exercice pour pratiquer</p>
+    </div>
+  </div>
+  <div class="train-grid">
+    <div class="train-card qcm" onclick="openQCM()">
+      <span class="train-type-badge badge-qcm">QCM</span>
+      <h3>Questions à choix multiples</h3>
+      <p>Testez vos connaissances sur la trigonométrie avec des questions générées par IA, vérifiées mathématiquement.</p>
+      <div class="train-meta">
+        <span class="train-dot" style="background:var(--purple-light)"></span>
+        5 questions · ~10 min
+      </div>
+    </div>
+  </div>
+
+  <!-- Progression sous-thèmes -->
+  <div class="module-progress-section">
+    <div class="section-header">
+      <div class="section-icon history">📊</div>
+      <div class="section-title-text">
+        <h2>Progression par sous-thème</h2>
+        <p>Visualisez votre avancement sur chaque notion</p>
+      </div>
+    </div>
+    <div class="progress-cards" id="progressCards"></div>
+  </div>
+
+  <!-- Historique -->
+  <div class="section-header">
+    <div class="section-icon history">🕐</div>
+    <div class="section-title-text">
+      <h2>Historique des activités</h2>
+      <p>Vos dernières sessions de travail</p>
+    </div>
+  </div>
+  <div class="history-grid" id="historyGrid"></div>
+
+
+
+</div>
+
+<!-- ── QCM MODAL ── -->
+<div class="qcm-overlay" id="qcmOverlay">
+  <div class="qcm-modal" id="qcmModal">
+    <div class="qcm-modal-header">
+      <div>
+        <h2>QCM — <span id="qcmModuleName">Trigonométrie</span></h2>
+        <p id="qcmSubtitle">Génération des questions en cours…</p>
+      </div>
+      <button class="qcm-close" onclick="closeQCM()">✕</button>
+    </div>
+    <div class="qcm-body" id="qcmBody">
+      <div class="qcm-loading">
+        <div class="qcm-spinner"></div>
+        <p>Génération des questions par IA…</p>
+        <p style="font-size:12px;margin-top:6px;opacity:.6">Vérification mathématique en cours</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const MODULE = (new URLSearchParams(location.search).get('module')) || 'trigonométrie';
+const NIVEAU = (new URLSearchParams(location.search).get('niveau')) || 'intermédiaire';
+const NB_QUESTIONS = 5;
+
+// ── DONNÉES SIMULÉES ─────────────────────────────────────────────────────────
+const progressData = [
+  { name: 'Cercle trigonométrique', pct: 80 },
+  { name: 'sin, cos, tan', pct: 65 },
+  { name: 'Identités remarquables', pct: 40 },
+  { name: 'Angles associés', pct: 25 },
+  { name: 'Équations trig.', pct: 10 },
+];
+
+const historyData = [
+  { type: 'QCM', date: "Aujourd'hui, 14:32", score: 4, total: 5, notion: 'Cercle trigo.' },
+  { type: 'QCM', date: 'Hier, 20:15', score: 3, total: 5, notion: 'sin / cos / tan' },
+  { type: 'Flash', date: 'Hier, 10:04', score: 17, total: 20, notion: 'Formules clés' },
+  { type: 'QCM', date: '05/04, 18:30', score: 2, total: 5, notion: 'Identités' },
+  { type: 'QCM', date: '03/04, 09:12', score: 5, total: 5, notion: 'Cercle trigo.' },
+];
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+document.getElementById('moduleTitle').textContent =
+  MODULE.charAt(0).toUpperCase() + MODULE.slice(1);
+document.getElementById('qcmModuleName').textContent =
+  MODULE.charAt(0).toUpperCase() + MODULE.slice(1);
+
+// Progress global
+const globalPct = Math.round(progressData.reduce((a,b) => a + b.pct, 0) / progressData.length);
+const completedActivities = historyData.length;
+setTimeout(() => {
+  document.getElementById('mainProgressBar').style.width = globalPct + '%';
+  document.getElementById('mainProgressPct').textContent = globalPct + '%';
+  document.getElementById('progressText').textContent = completedActivities + ' / 10 activités';
+}, 300);
+
+// Progress cards
+const pgContainer = document.getElementById('progressCards');
+progressData.forEach(item => {
+  const card = document.createElement('div');
+  card.className = 'prog-card';
+  card.innerHTML = `
+    <div class="prog-card-top">
+      <span class="prog-card-name">${item.name}</span>
+      <span class="prog-card-pct">${item.pct}%</span>
+    </div>
+    <div class="prog-card-bar"><div class="prog-card-fill" style="width:0%" data-pct="${item.pct}"></div></div>
+  `;
+  pgContainer.appendChild(card);
+});
+setTimeout(() => {
+  pgContainer.querySelectorAll('.prog-card-fill').forEach(el => {
+    el.style.width = el.dataset.pct + '%';
+  });
+}, 400);
+
+// History
+const histContainer = document.getElementById('historyGrid');
+historyData.forEach(item => {
+  const ratio = item.score / item.total;
+  const cls = ratio >= 0.8 ? 'good' : ratio >= 0.5 ? 'medium' : 'bad';
+  const card = document.createElement('div');
+  card.className = 'history-card';
+  card.innerHTML = `
+    <div class="hist-top">
+      <span class="hist-name">${item.type} — ${item.notion}</span>
+      <span class="hist-score ${cls}">${item.score}/${item.total}</span>
+    </div>
+    <div class="hist-meta">${item.date}</div>
+    <div class="hist-mini-bar"><div class="hist-mini-fill" style="width:${Math.round(ratio*100)}%"></div></div>
+  `;
+  histContainer.appendChild(card);
+});
+
+// ── QCM STATE ────────────────────────────────────────────────────────────────
+let questions = [];
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function openQCM() {
+  document.getElementById('qcmOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  loadQuestions();
+}
+function closeQCM() {
+  document.getElementById('qcmOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  questions = []; currentQ = 0; score = 0; answered = false;
+  document.getElementById('qcmSubtitle').textContent = 'Génération des questions en cours…';
+  document.getElementById('qcmBody').innerHTML = `
+    <div class="qcm-loading">
+      <div class="qcm-spinner"></div>
+      <p>Génération des questions par IA…</p>
+    </div>`;
+}
+
+async function loadQuestions() {
+  document.getElementById('qcmSubtitle').textContent = `5 questions · ${MODULE}`;
+  const body = document.getElementById('qcmBody');
+
+  const prompt = `Tu es un tuteur de mathématiques pour des étudiants de L1.
+Génère ${NB_QUESTIONS} questions QCM sur la notion "${MODULE}" de niveau "${NIVEAU}".
+
+RÈGLES IMPORTANTES :
+- Réponds UNIQUEMENT avec un JSON valide, sans markdown, sans backticks.
+- Format : tableau JSON de ${NB_QUESTIONS} objets avec les champs : "question" (string), "options" (tableau de 4 strings), "answer" (string identique à l'une des options).
+- Questions mathématiquement correctes.
+- Les mauvaises réponses doivent être plausibles.
+
+Exemple de format :
+[{"question":"...","options":["a","b","c","d"],"answer":"a"}]`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    questions = JSON.parse(clean);
+    currentQ = 0; score = 0; answered = false;
+    renderQuestion();
+  } catch (e) {
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:#b01c1c;">
+      <p style="font-size:28px;margin-bottom:12px;">⚠</p>
+      <p style="font-weight:600;margin-bottom:8px;">Erreur de génération</p>
+      <p style="font-size:13px;color:#7a5a85;">Vérifiez votre connexion et réessayez.</p>
+      <button class="btn-primary" style="margin-top:20px;" onclick="loadQuestions()">Réessayer</button>
+    </div>`;
+  }
+}
+
+function renderQuestion() {
+  if (currentQ >= questions.length) { renderResults(); return; }
+  const q = questions[currentQ];
+  answered = false;
+  const body = document.getElementById('qcmBody');
+  const letters = ['A','B','C','D'];
+  body.innerHTML = `
+    <div class="qcm-question-num">Question ${currentQ+1} sur ${questions.length}</div>
+    <div class="qcm-question-text">${q.question}</div>
+    <div class="qcm-options" id="optionsWrap">
+      ${q.options.map((opt, i) => `
+        <button class="qcm-option" onclick="selectOption(this, '${escQ(opt)}')">
+          <span class="opt-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="qcm-feedback" id="feedback"></div>
+    <div class="qcm-footer">
+      <div class="qcm-score-mini">Score : <strong>${score} / ${currentQ}</strong></div>
+      <button class="btn-primary" id="nextBtn" disabled onclick="nextQuestion()">
+        ${currentQ + 1 < questions.length ? 'Question suivante →' : 'Voir les résultats →'}
+      </button>
+    </div>
+  `;
+}
+
+function escQ(s) { return s.replace(/'/g, "\\'"); }
+
+function selectOption(btn, chosen) {
+  if (answered) return;
+  answered = true;
+  const correct = questions[currentQ].answer;
+  const opts = document.querySelectorAll('.qcm-option');
+  const fb = document.getElementById('feedback');
+
+  opts.forEach(o => {
+    const txt = o.querySelector('span:last-child').textContent;
+    if (txt === correct) { o.classList.add('correct'); o.querySelector('.opt-letter').textContent = '✓'; }
+    else if (txt === chosen && chosen !== correct) { o.classList.add('wrong'); o.querySelector('.opt-letter').textContent = '✗'; }
+    o.style.cursor = 'default';
+  });
+
+  if (chosen === correct) {
+    score++;
+    fb.className = 'qcm-feedback correct show';
+    fb.textContent = '✓ Bonne réponse !';
+  } else {
+    fb.className = 'qcm-feedback wrong show';
+    fb.textContent = `✗ La bonne réponse était : ${correct}`;
+  }
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function renderResults() {
+  const pct = Math.round(score / questions.length * 100);
+  const msg = pct >= 80 ? 'Excellent travail ! 🎉' : pct >= 60 ? 'Bien joué, continuez ainsi !' : 'À retravailler, ne lâchez pas !';
+  const body = document.getElementById('qcmBody');
+  body.innerHTML = `
+    <div class="results-panel">
+      <div class="results-circle">
+        <span class="score-num">${score}/${questions.length}</span>
+        <span class="score-total">${pct}%</span>
+      </div>
+      <h3>${msg}</h3>
+      <p>Vous avez répondu correctement à <strong style="color:var(--purple-dark)">${score}</strong> question${score > 1 ? 's' : ''} sur ${questions.length}.</p>
+      <div class="results-btns">
+        <button class="btn-secondary" onclick="closeQCM()">Fermer</button>
+        <button class="btn-primary" onclick="loadQuestions()">Recommencer</button>
+      </div>
+    </div>
+  `;
+  updateGlobalProgress(pct);
+}
+
+function updateGlobalProgress(lastScore) {
+  const newPct = Math.min(100, globalPct + Math.round(lastScore * 0.1));
+  document.getElementById('mainProgressBar').style.width = newPct + '%';
+  document.getElementById('mainProgressPct').textContent = newPct + '%';
+}
+
+// Close overlay on outside click
+document.getElementById('qcmOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeQCM();
+});
+</script>
+</body>
+</html>
