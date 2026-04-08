@@ -58,3 +58,5 @@ This branch focuses on front-end development and experimentation:
   - a quick access training button (“M'entraîner”)
   - progression by subthemes
 >>>>>>> 91548bc (Update README.md)
+ These are visual mockups :
+<img width="934" height="522" alt="image" src="https://github.com/user-attachments/assets/faa9c372-129c-4414-9160-f5f263b10f12" />
