@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator_test</title>
+    <link rel="stylesheet" href="/static/CSS/index.css">
+
+</head>
+
+<body>
+    <main>
+        <!-- Ajouter un id pour pouvoir cacher -->
+        <div class="content_button_notion" id="section-accueil">
+            <div class="wrap_button">
+                <button class="notion">Nombre complexe</button>
+                <button class="notion">Trigonométrie</button>
+                <button class="notion">Fraction</button>
+            </div>
+        </div>
+        <div id="app"></div>
+    </main>
+
+    <script>
+
+        // Stocke les réponses du QCM une fois récupérées
+        let answers = [];
+
+        // Fonction pour valider le QCM
+        function checkAnswers() {
+            let score = 0;
+            const total = answers.length;
+
+            answers.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selected) {
+                    const selectedOption = q.options[selected.value];
+                    if (selectedOption === q.answer) {
+                        score++;
+                    }
+                }
+            });
+
+            document.getElementById("result").innerHTML = `Score : ${score} / ${total}`;
+        }
+
+
+
+
+        function retourAccueil() {
+            document.getElementById("app").innerHTML = "";
+            document.getElementById("section-accueil").style.display = "block";
+        }
+
+
+
+        document.addEventListener("click", async function (event) {
+            if (event.target.classList.contains("notion")) {
+                let selectedNotion = event.target.textContent;
+
+                const response = await fetch("/generate_exo", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ notion: selectedNotion })
+                });
+
+                const html = await response.text();
+
+                // CACHER les boutons
+                document.getElementById("section-accueil").style.display = "none";
+
+                // Afficher le QCM
+                document.getElementById("app").innerHTML = html;
+                // Récupère les données JSON des questions depuis le template
+
+                // IMPORTANT : le template qcm.html doit générer cette variable JS
+                answers = JSON.parse(document.getElementById("app").querySelector('#questions-data').textContent);
+            }
+        });
+    </script>
+</body>
+
+</html>
