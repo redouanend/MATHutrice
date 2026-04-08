@@ -217,6 +217,9 @@
     border-radius: 0;
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fe398df (WIP)
   .train-container {
     display: flex;
     justify-content: center;
@@ -245,6 +248,7 @@
   .train-btn:active {
     transform: scale(0.96);
   }
+<<<<<<< HEAD
 =======
   .train-card.qcm::before { background: linear-gradient(180deg, var(--purple-light), var(--purple-dark)); }
   .train-card.redaction::before { background: linear-gradient(180deg, var(--pink-hot), var(--red-main)); }
@@ -252,6 +256,8 @@
   .train-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: rgba(140,82,240,0.25); }
   .train-card:active { transform: translateY(-1px); }
 >>>>>>> 48b55de ([MODULE] 1st version of "Module" page with progress bars and description (All data are fictive, not connected to back-end and to activity))
+=======
+>>>>>>> fe398df (WIP)
   .train-type-badge {
     font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
     padding: 4px 10px; border-radius: 20px;
@@ -261,10 +267,13 @@
   .badge-redaction { background: #fde8f3; color: var(--pink-hot); }
   .badge-flash { background: #ffe8e8; color: var(--red-main); }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   .train-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark); }
   .train-card p { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px; }
 >>>>>>> 48b55de ([MODULE] 1st version of "Module" page with progress bars and description (All data are fictive, not connected to back-end and to activity))
+=======
+>>>>>>> fe398df (WIP)
   .train-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-light); }
   .train-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-light); }
 
@@ -489,6 +498,7 @@
   <!-- Description -->
   <div class="desc-card">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <p>Ce module couvre les <strong>bases de la trigonométrie</strong> nécessaires en première année de licence. Vous y trouverez des exercices progressifs : Exercices pour tester vos connaissances, step-by-step pour l'approfondissement, et questions ouvertes pour mémoriser rapidement les formules clés. Chaque activité contribue à votre progression et vous permet d'identifier vos points faibles.</p>
   </div>
   <!-- S'entraîner -->
@@ -520,6 +530,16 @@
     </div>
   </div>
 >>>>>>> 48b55de ([MODULE] 1st version of "Module" page with progress bars and description (All data are fictive, not connected to back-end and to activity))
+=======
+    <p>Ce module couvre les <strong>bases de la trigonométrie</strong> nécessaires en première année de licence. Vous y trouverez des exercices progressifs : Exercices pour tester vos connaissances, step-by-step pour l'approfondissement, et questions ouvertes pour mémoriser rapidement les formules clés. Chaque activité contribue à votre progression et vous permet d'identifier vos points faibles.</p>
+  </div>
+  <!-- S'entraîner -->
+<div class="train-container">
+  <button class="train-btn" onclick="openQCM()">
+    🎯 M'entraîner
+  </button>
+</div>
+>>>>>>> fe398df (WIP)
 
   <!-- Progression sous-thèmes -->
   <div class="module-progress-section">
@@ -584,11 +604,15 @@ const progressData = [
 
 const historyData = [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fe398df (WIP)
   { type: 'Test', date: "Aujourd'hui, 14:32", score: 4, total: 5, notion: 'Cercle trigo.' },
   { type: 'Test', date: 'Hier, 20:15', score: 3, total: 5, notion: 'sin / cos / tan' },
   { type: 'Test', date: 'Hier, 10:04', score: 17, total: 20, notion: 'Formules clés' },
   { type: 'Test', date: '05/04, 18:30', score: 2, total: 5, notion: 'Identités' },
   { type: 'Test', date: '03/04, 09:12', score: 5, total: 5, notion: 'Cercle trigo.' },
+<<<<<<< HEAD
 =======
   { type: 'QCM', date: "Aujourd'hui, 14:32", score: 4, total: 5, notion: 'Cercle trigo.' },
   { type: 'QCM', date: 'Hier, 20:15', score: 3, total: 5, notion: 'sin / cos / tan' },
@@ -596,6 +620,8 @@ const historyData = [
   { type: 'QCM', date: '05/04, 18:30', score: 2, total: 5, notion: 'Identités' },
   { type: 'QCM', date: '03/04, 09:12', score: 5, total: 5, notion: 'Cercle trigo.' },
 >>>>>>> 48b55de ([MODULE] 1st version of "Module" page with progress bars and description (All data are fictive, not connected to back-end and to activity))
+=======
+>>>>>>> fe398df (WIP)
 ];
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
@@ -676,6 +702,7 @@ function closeQCM() {
 
 async function loadQuestions() {
 <<<<<<< HEAD
+<<<<<<< HEAD
   document.getElementById('qcmSubtitle').textContent = `9 questions · ${MODULE} · Tous sous-thèmes`;
   const body = document.getElementById('qcmBody');
 
@@ -688,6 +715,13 @@ Génère ${NB_QUESTIONS} exercice sur la notion "${MODULE}" de niveau "${NIVEAU}
   const prompt = `Tu es un tuteur de mathématiques pour des étudiants de L1.
 Génère ${NB_QUESTIONS} questions QCM sur la notion "${MODULE}" de niveau "${NIVEAU}".
 >>>>>>> 48b55de ([MODULE] 1st version of "Module" page with progress bars and description (All data are fictive, not connected to back-end and to activity))
+=======
+  document.getElementById('qcmSubtitle').textContent = `9 questions · ${MODULE} · Tous sous-thèmes`;
+  const body = document.getElementById('qcmBody');
+
+  const prompt = `Tu es un tuteur de mathématiques pour des étudiants de L1.
+Génère ${NB_QUESTIONS} exercice sur la notion "${MODULE}" de niveau "${NIVEAU}".
+>>>>>>> fe398df (WIP)
 
 RÈGLES IMPORTANTES :
 - Réponds UNIQUEMENT avec un JSON valide, sans markdown, sans backticks.
