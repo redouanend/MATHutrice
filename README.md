@@ -46,8 +46,8 @@ Integrating the chosen solution while keeping the interface minimalist and perfo
 Ensuring the interface remains responsive and user-friendly across devices.
 
 This is the 1st version displayed : 
+<img width="1917" height="962" alt="Capture d&#39;écran 2026-04-08 124044" src="https://github.com/user-attachments/assets/1074a7ee-fdd1-423f-81aa-eab492ac7d54" />
 <img width="1122" height="959" alt="Capture d&#39;écran 2026-04-08 124111" src="https://github.com/user-attachments/assets/7603ce74-42c6-4321-83a2-1ed66fc7d541" />
 <img width="1115" height="965" alt="Capture d&#39;écran 2026-04-08 124100" src="https://github.com/user-attachments/assets/9cf56503-7e76-4227-b67c-ecaa2a4687ff" />
-<img width="1917" height="962" alt="Capture d&#39;écran 2026-04-08 124044" src="https://github.com/user-attachments/assets/1074a7ee-fdd1-423f-81aa-eab492ac7d54" />
 
 
