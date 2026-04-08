@@ -13,8 +13,15 @@ La correction se fait par comparaison souple (normalisation de la chaîne)
 """
 
 from base_generator import (
-    call_mistral, generate_test, display_score,
-    print_test_header, print_question_header, parse_json, logger, client, MODEL
+    call_mistral,
+    generate_test,
+    display_score,
+    print_test_header,
+    print_question_header,
+    parse_json,
+    logger,
+    client,
+    MODEL,
 )
 
 
@@ -26,6 +33,7 @@ QRO_FORMAT = """
   "correct_answer": "La réponse attendue (complète et précise)"
 }
 """
+
 
 def build_prompt(notion: str, niveau: str) -> str:
     return f"""
@@ -55,9 +63,13 @@ Format attendu :
 {QRO_FORMAT}
 """
 
-# correction prompt (LLM-as-judge) 
 
-def build_correction_prompt(question: str, correct_answer: str, user_answer: str) -> str:
+# correction prompt (LLM-as-judge)
+
+
+def build_correction_prompt(
+    question: str, correct_answer: str, user_answer: str
+) -> str:
     return f"""
 Tu es un correcteur de mathématiques strict mais juste.
 
@@ -84,6 +96,7 @@ Format attendu :
 
 # PARSING AND VALIDATION OF MISTRAL'S RESPONSE
 
+
 def parse_and_validate(raw: str) -> dict:
     """
     Valide que la réponse brute de Mistral respecte le format QRO.
@@ -91,7 +104,7 @@ def parse_and_validate(raw: str) -> dict:
     """
     data = parse_json(raw)
 
-    question       = data.get("question", "").strip()
+    question = data.get("question", "").strip()
     correct_answer = data.get("correct_answer", "").strip()
 
     if not question:
@@ -100,14 +113,18 @@ def parse_and_validate(raw: str) -> dict:
     if not correct_answer:
         raise ValueError("Le champ 'correct_answer' est vide.")
 
+    # PAS FORCEMENT UTILE SI LE PROMPT EST BIEN REALISER OU ALORS METTRE JUSTE PAS DE 3e COMPOSENTES DANS LE DICO
     # Sécurité : Mistral ne doit pas générer de champ "options" pour ce format
     if "options" in data:
-        raise ValueError("Format QRO invalide : champ 'options' présent (format QCM reçu).")
+        raise ValueError(
+            "Format QRO invalide : champ 'options' présent (format QCM reçu)."
+        )
 
     return {"question": question, "correct_answer": correct_answer}
 
 
 # CORRECTION DE LA RÉPONSE ÉTUDIANT
+
 
 def normalize(s: str) -> str:
     """Normalise une chaîne pour comparaison souple (minuscules, espaces, ponctuation)."""
@@ -122,7 +139,9 @@ def is_correct_simple(user_answer: str, correct_answer: str) -> bool:
     return normalize(user_answer) == normalize(correct_answer)
 
 
-def is_correct_llm(question: str, correct_answer: str, user_answer: str) -> tuple[bool, str]:
+def is_correct_llm(
+    question: str, correct_answer: str, user_answer: str
+) -> tuple[bool, str]:
     """
     Correction via Mistral (LLM-as-judge).
     Utilisée quand la comparaison simple ne suffit pas.
@@ -131,18 +150,19 @@ def is_correct_llm(question: str, correct_answer: str, user_answer: str) -> tupl
     prompt = build_correction_prompt(question, correct_answer, user_answer)
     try:
         response = client.chat.complete(
-            model=MODEL,
-            messages=[{"role": "user", "content": prompt}]
+            model=MODEL, messages=[{"role": "user", "content": prompt}]
         )
-        raw  = response.choices[0].message.content
+        raw = response.choices[0].message.content
         data = parse_json(raw)
 
-        correct  = bool(data.get("correct", False))
+        correct = bool(data.get("correct", False))
         feedback = data.get("feedback", "").strip()
         return correct, feedback
 
     except Exception as e:
-        logger.warning(f"Correction LLM échouée : {e}. Fallback sur comparaison simple.")
+        logger.warning(
+            f"Correction LLM échouée : {e}. Fallback sur comparaison simple."
+        )
         return is_correct_simple(user_answer, correct_answer), ""
 
 
@@ -162,7 +182,8 @@ def evaluate_answer(q: dict, user_answer: str) -> tuple[bool, str]:
     return is_correct_llm(q["question"], q["correct_answer"], user_answer)
 
 
-# GÉNÉRATION 
+# GÉNÉRATION
+
 
 def generate_qro_question(notion: str, niveau: str) -> dict | None:
     """Génère une question QRO validée. Retourne None si échec."""
@@ -175,7 +196,8 @@ def generate_qro_test(notion: str, niveau: str, n: int) -> list[dict]:
     return generate_test(notion, niveau, n, generate_qro_question)
 
 
-# INTERFACE CONSOLE 
+# INTERFACE CONSOLE
+
 
 def ask_question(index: int, total: int, q: dict) -> bool:
     """Pose une question QRO dans le terminal. Retourne True si bonne réponse."""
@@ -202,6 +224,7 @@ def ask_question(index: int, total: int, q: dict) -> bool:
     return correct
 
 
+# Faut faire un run test globale des 3 formats
 def run_test(questions: list[dict]) -> None:
     """Lance le test QRO en console et affiche le score final."""
     if not questions:
@@ -211,7 +234,7 @@ def run_test(questions: list[dict]) -> None:
     total = len(questions)
     score = 0
 
-    print_test_header(total, "QRO")
+    # print_test_header(total, "QRO")
 
     for i, q in enumerate(questions, 1):
         if ask_question(i, total, q):
@@ -220,12 +243,12 @@ def run_test(questions: list[dict]) -> None:
     display_score(score, total, "QRO")
 
 
-# ─── MAIN ─────────────────────────────────────────────────────────────────────
+# # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
-def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 3):
-    questions = generate_qro_test(notion=notion, niveau=niveau, n=n)
-    run_test(questions)
+# def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 3):
+#     questions = generate_qro_test(notion=notion, niveau=niveau, n=n)
+#     run_test(questions)
 
 
-if __name__ == "__main__":
-    main(notion="dérivées", niveau="intermédiaire", n=3)
+# if __name__ == "__main__":
+#     main(notion="dérivées", niveau="intermédiaire", n=3)

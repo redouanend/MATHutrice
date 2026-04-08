@@ -27,8 +27,13 @@ Différence avec trous_generator :
 """
 
 from base_generator import (
-    call_mistral, generate_test, display_score,
-    print_test_header, print_question_header, parse_json, logger
+    call_mistral,
+    generate_test,
+    display_score,
+    print_test_header,
+    print_question_header,
+    parse_json,
+    logger,
 )
 from qro_generator import evaluate_answer
 
@@ -50,6 +55,7 @@ STEPS_FORMAT = """
   ]
 }
 """
+
 
 def build_prompt(notion: str, niveau: str) -> str:
     return f"""
@@ -89,6 +95,7 @@ Format attendu :
 
 # ─── PARSING & VALIDATION ─────────────────────────────────────────────────────
 
+
 def parse_and_validate(raw: str) -> dict:
     """
     Valide que la réponse brute de Mistral respecte le format step by step.
@@ -96,8 +103,8 @@ def parse_and_validate(raw: str) -> dict:
     """
     data = parse_json(raw)
 
-    enonce          = data.get("enonce", "").strip()
-    questions       = data.get("questions", [])
+    enonce = data.get("enonce", "").strip()
+    questions = data.get("questions", [])
     correct_answers = data.get("correct_answers", [])
 
     if not enonce:
@@ -119,16 +126,19 @@ def parse_and_validate(raw: str) -> dict:
         raise ValueError("Toutes les questions doivent être des chaînes non vides.")
 
     if not all(isinstance(a, str) and a.strip() for a in correct_answers):
-        raise ValueError("Toutes les correct_answers doivent être des chaînes non vides.")
+        raise ValueError(
+            "Toutes les correct_answers doivent être des chaînes non vides."
+        )
 
     return {
-        "enonce":          enonce,
-        "questions":       [q.strip() for q in questions],
+        "enonce": enonce,
+        "questions": [q.strip() for q in questions],
         "correct_answers": [a.strip() for a in correct_answers],
     }
 
 
 # ─── GÉNÉRATION ───────────────────────────────────────────────────────────────
+
 
 def generate_steps_question(notion: str, niveau: str) -> dict | None:
     """Génère un exercice step by step validé. Retourne None si échec."""
@@ -143,6 +153,7 @@ def generate_steps_test(notion: str, niveau: str, n: int) -> list[dict]:
 
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
+
 def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     """
     Pose un exercice step by step dans le terminal.
@@ -152,11 +163,13 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     """
     print_question_header(index, total)
     print(f"\n📋 Énoncé :\n{ex['enonce']}\n")
-    print(f"Cet exercice comporte {len(ex['questions'])} étape(s). "
-          f"Répondez à chaque étape dans l'ordre.\n")
+    print(
+        f"Cet exercice comporte {len(ex['questions'])} étape(s). "
+        f"Répondez à chaque étape dans l'ordre.\n"
+    )
 
-    score_ex   = 0
-    total_ex   = len(ex["questions"])
+    score_ex = 0
+    total_ex = len(ex["questions"])
     first_error = None  # index de la première étape fausse
 
     for i, (question, correct) in enumerate(
@@ -195,8 +208,10 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     print(f"  {'═' * 44}")
     print(f"  Score : {score_ex}/{total_ex}")
     if first_error:
-        print(f"  ⚠ Première erreur détectée à l'étape {first_error} — "
-              f"c'est là que le raisonnement diverge.")
+        print(
+            f"  ⚠ Première erreur détectée à l'étape {first_error} — "
+            f"c'est là que le raisonnement diverge."
+        )
     else:
         print("  🏆 Toutes les étapes sont correctes !")
     print(f"  {'═' * 44}\n")
@@ -204,32 +219,33 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     return score_ex, total_ex
 
 
-def run_test(exercices: list[dict]) -> None:
+# Faut Faire un run test globale pour 3 formats
+def run_sbs(exercices: list[dict]) -> None:
     """Lance le test step by step en console et affiche le score final."""
     if not exercices:
         print("Aucun exercice disponible. Abandon.")
         return
 
-    total_ex    = len(exercices)
+    total_ex = len(exercices)
     score_total = 0
-    max_total   = 0
+    max_total = 0
 
-    print_test_header(total_ex, "STEP BY STEP")
+    # print_test_header(total_ex, "STEP BY STEP")
 
     for i, ex in enumerate(exercices, 1):
         score_ex, nb_etapes = ask_exercice(i, total_ex, ex)
         score_total += score_ex
-        max_total   += nb_etapes
+        max_total += nb_etapes
 
     display_score(score_total, max_total, "STEP BY STEP")
 
 
-# ─── MAIN ─────────────────────────────────────────────────────────────────────
+# # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
-def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 2):
-    exercices = generate_steps_test(notion=notion, niveau=niveau, n=n)
-    run_test(exercices)
+# def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 2):
+#     exercices = generate_steps_test(notion=notion, niveau=niveau, n=n)
+#     run_test(exercices)
 
 
-if __name__ == "__main__":
-    main(notion="dérivées", niveau="intermédiaire", n=2)
+# if __name__ == "__main__":
+#     main(notion="dérivées", niveau="intermédiaire", n=2)

@@ -28,14 +28,15 @@ from mistralai import Mistral
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
 
-API_KEY     = os.getenv("MISTRAL_API_KEY", "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk")
-MODEL       = "mistral-small"
+API_KEY = os.getenv("MISTRAL_API_KEY", "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk")
+MODEL = "mistral-small"
 MAX_RETRIES = 3
 
 client = Mistral(api_key=API_KEY)
 
 
 # ─── UTILITAIRES JSON ─────────────────────────────────────────────────────────
+
 
 def clean_json(raw: str) -> str:
     """
@@ -65,7 +66,10 @@ def parse_json(raw: str) -> dict:
 
 # ─── APPEL MISTRAL AVEC RETRY ─────────────────────────────────────────────────
 
-def call_mistral(prompt: str, notion: str, parse_and_validate, post_process=None) -> dict | None:
+
+def call_mistral(
+    prompt: str, notion: str, parse_and_validate, post_process=None
+) -> dict | None:
     """
     Appelle Mistral avec retry automatique (MAX_RETRIES tentatives).
 
@@ -81,10 +85,9 @@ def call_mistral(prompt: str, notion: str, parse_and_validate, post_process=None
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             response = client.chat.complete(
-                model=MODEL,
-                messages=[{"role": "user", "content": prompt}]
+                model=MODEL, messages=[{"role": "user", "content": prompt}]
             )
-            raw      = response.choices[0].message.content
+            raw = response.choices[0].message.content
             question = parse_and_validate(raw)
 
             if post_process:
@@ -96,13 +99,18 @@ def call_mistral(prompt: str, notion: str, parse_and_validate, post_process=None
         except ValueError as e:
             logger.warning(f"Tentative {attempt}/{MAX_RETRIES} échouée — {e}")
             if attempt == MAX_RETRIES:
-                logger.error(f"Abandon après {MAX_RETRIES} tentatives pour notion='{notion}'")
+                logger.error(
+                    f"Abandon après {MAX_RETRIES} tentatives pour notion='{notion}'"
+                )
                 return None
 
 
 # ─── GÉNÉRATION D'UN TEST (générique) ─────────────────────────────────────────
 
-def generate_test(notion: str, niveau: str, n: int, fonction_generer_format_voulu) -> list[dict]:
+
+def generate_test(
+    notion: str, niveau: str, n: int, fonction_generer_format_voulu
+) -> list[dict]:
     """
     Génère un test de n questions en appelant fonction_generer_format_voulu à chaque itération.
     Les questions qui échouent après MAX_RETRIES sont ignorées (pas de plantage).
@@ -120,13 +128,31 @@ def generate_test(notion: str, niveau: str, n: int, fonction_generer_format_voul
         if question:
             questions.append(question)
         else:
-            logger.warning(f"Question {i + 1} ignorée (échec après {MAX_RETRIES} tentatives).")
+            logger.warning(
+                f"Question {i + 1} ignorée (échec après {MAX_RETRIES} tentatives)."
+            )
 
     logger.info(f"{len(questions)}/{n} questions générées avec succès.")
     return questions
 
 
-# SCORE FINAL (générique) 
+def generate_test(
+    notion: str,
+    niveau: str,
+    nb_par_format: list[int],
+    fonctions_generatrices: list,
+) -> list[dict]:
+    """
+    Génère un test avec plusieurs formats de questions.
+
+    Paramètres :
+      nb_par_format : liste d'entiers, ex. [2, 3, 1]
+      fonctions_generatrices : liste de fonctions de même taille
+    """
+
+
+# SCORE FINAL (générique)
+
 
 def display_score(score: int, total: int, format_label: str) -> None:
     """Affiche le score final dans le terminal."""
@@ -156,18 +182,18 @@ def display_score(score: int, total: int, format_label: str) -> None:
 
 # ─── HEADER DE TEST (générique) ───────────────────────────────────────────────
 
-def print_test_header(total: int, format_label: str) -> None:
-    """Affiche l'en-tête du test dans le terminal."""
-    print(f"\n{'═' * 50}")
-    print(f"  TEST {format_label} — {total} question(s)")
-    print(f"{'═' * 50}")
+# def print_test_header(total: int, format_label: str) -> None:
+#     """Affiche l'en-tête du test dans le terminal."""
+#     print(f"\n{'═' * 50}")
+#     print(f"  TEST {format_label} — {total} question(s)")
+#     print(f"{'═' * 50}")
 
 
-def print_question_header(index: int, total: int, extra: str = "") -> None:
-    """Affiche l'en-tête d'une question individuelle."""
-    print(f"\n{'─' * 50}")
-    label = f"  Question {index}/{total}"
-    if extra:
-        label += f"  [{extra}]"
-    print(label)
-    print(f"{'─' * 50}")
+# def print_question_header(index: int, total: int, extra: str = "") -> None:
+#     """Affiche l'en-tête d'une question individuelle."""
+#     print(f"\n{'─' * 50}")
+#     label = f"  Question {index}/{total}"
+#     if extra:
+#         label += f"  [{extra}]"
+#     print(label)
+#     print(f"{'─' * 50}")

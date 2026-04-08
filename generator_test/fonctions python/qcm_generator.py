@@ -13,8 +13,13 @@ Les réponses fausses de Mistral sont corrigées automatiquement.
 """
 
 from base_generator import (
-    call_mistral, generate_test, display_score,
-    print_test_header, print_question_header, parse_json, logger
+    call_mistral,
+    generate_test,
+    display_score,
+    print_test_header,
+    print_question_header,
+    parse_json,
+    logger,
 )
 from verifier import apply_verification
 
@@ -28,6 +33,7 @@ QCM_FORMAT = """
   "answer": "la bonne réponse (doit être identique à l'une des options)"
 }
 """
+
 
 def build_prompt(notion: str, niveau: str) -> str:
     return f"""
@@ -58,6 +64,7 @@ Format attendu :
 
 # ─── PARSING & VALIDATION ─────────────────────────────────────────────────────
 
+
 def parse_and_validate(raw: str) -> dict:
     """
     Valide que la réponse brute de Mistral respecte le format QCM.
@@ -66,25 +73,30 @@ def parse_and_validate(raw: str) -> dict:
     data = parse_json(raw)
 
     question = data.get("question", "").strip()
-    options  = data.get("options", [])
-    answer   = data.get("answer", "")
+    options = data.get("options", [])
+    answer = data.get("answer", "")
 
     if not question:
         raise ValueError("Le champ 'question' est vide.")
 
     if not isinstance(options, list) or len(options) != 4:
-        raise ValueError(f"'options' doit contenir exactement 4 éléments, reçu : {len(options)}.")
+        raise ValueError(
+            f"'options' doit contenir exactement 4 éléments, reçu : {len(options)}."
+        )
 
     if not all(isinstance(o, str) and o.strip() for o in options):
         raise ValueError("Toutes les options doivent être des chaînes non vides.")
 
     if not isinstance(answer, str) or answer.strip() not in options:
-        raise ValueError(f"'answer' doit être identique à l'une des options. Reçu : '{answer}'")
+        raise ValueError(
+            f"'answer' doit être identique à l'une des options. Reçu : '{answer}'"
+        )
 
     return {"question": question, "options": options, "answer": answer.strip()}
 
 
 # ─── POST-PROCESSING : vérification SymPy ─────────────────────────────────────
+
 
 def post_process(question: dict) -> dict:
     """Applique la vérification mathématique SymPy après validation du format."""
@@ -95,6 +107,7 @@ def post_process(question: dict) -> dict:
 
 
 # ─── GÉNÉRATION ───────────────────────────────────────────────────────────────
+
 
 def generate_qcm_question(notion: str, niveau: str) -> dict | None:
     """Génère une question QCM validée et vérifiée. Retourne None si échec."""
@@ -109,9 +122,10 @@ def generate_qcm_test(notion: str, niveau: str, n: int) -> list[dict]:
 
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
+
 def ask_question(index: int, total: int, q: dict) -> bool:
     """Pose une question QCM dans le terminal. Retourne True si bonne réponse."""
-    verified  = q.get("verified", False)
+    verified = q.get("verified", False)
     corrected = q.get("corrected", False)
 
     if corrected:
@@ -133,7 +147,7 @@ def ask_question(index: int, total: int, q: dict) -> bool:
             break
         print("  ⚠ Entrez un chiffre entre 1 et 4.")
 
-    chosen  = q["options"][int(raw) - 1]
+    chosen = q["options"][int(raw) - 1]
     correct = chosen == q["answer"]
 
     if correct:
@@ -144,6 +158,7 @@ def ask_question(index: int, total: int, q: dict) -> bool:
     return correct
 
 
+# Faut faire un main globale des 3 formats
 def run_test(questions: list[dict]) -> None:
     """Lance le test QCM en console et affiche le score final."""
     if not questions:
@@ -153,7 +168,7 @@ def run_test(questions: list[dict]) -> None:
     total = len(questions)
     score = 0
 
-    print_test_header(total, "QCM")
+    # print_test_header(total, "QCM")
 
     for i, q in enumerate(questions, 1):
         if ask_question(i, total, q):
@@ -162,12 +177,12 @@ def run_test(questions: list[dict]) -> None:
     display_score(score, total, "QCM")
 
 
-# ─── MAIN ─────────────────────────────────────────────────────────────────────
+# # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
-def main(notion: str = "trigonométrie", niveau: str = "intermédiaire", n: int = 3):
-    questions = generate_qcm_test(notion=notion, niveau=niveau, n=n)
-    run_test(questions)
+# def main(notion: str = "trigonométrie", niveau: str = "intermédiaire", n: int = 3):
+#     questions = generate_qcm_test(notion=notion, niveau=niveau, n=n)
+#     run_test(questions)
 
 
-if __name__ == "__main__":
-    main(notion="trigonométrie", niveau="intermédiaire", n=3)
+# if __name__ == "__main__":
+#     main(notion="trigonométrie", niveau="intermédiaire", n=3)
