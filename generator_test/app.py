@@ -44,8 +44,8 @@ class Data(BaseModel):
 
 @app.post("/generate_exo", include_in_schema=True)
 async def get_notion(request: Request, data: Data):
-    qcm_data = generate_qcm_statement(data.notion, niveau="légendaire")
-
+    qcm_data = generate_qcm_statement(data.notion, niveau="Intermédiaire")
+    print(qcm_data)
     return templates.TemplateResponse(
         "qcm.html", {"request": request, "questions": [qcm_data]}
     )
