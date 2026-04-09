@@ -35,7 +35,7 @@ from base_generator import (
     parse_json,
     logger,
 )
-from qro_generator import evaluate_answer
+from type_questions.qro_generator import evaluate_answer
 
 
 # ─── PROMPT ───────────────────────────────────────────────────────────────────
