@@ -35,7 +35,7 @@ from base_generator import (
     parse_json,
     logger,
 )
-from qro_generator import evaluate_answer
+from type_questions.qro_generator import evaluate_answer
 
 
 # ─── PROMPT ───────────────────────────────────────────────────────────────────
@@ -219,8 +219,7 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     return score_ex, total_ex
 
 
-# Faut Faire un run test globale pour 3 formats
-def run_sbs(exercices: list[dict]) -> None:
+def run_test(exercices: list[dict]) -> None:
     """Lance le test step by step en console et affiche le score final."""
     if not exercices:
         print("Aucun exercice disponible. Abandon.")
@@ -240,12 +239,13 @@ def run_sbs(exercices: list[dict]) -> None:
     display_score(score_total, max_total, "STEP BY STEP")
 
 
-# # ─── MAIN ─────────────────────────────────────────────────────────────────────
-
-# def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 2):
-#     exercices = generate_steps_test(notion=notion, niveau=niveau, n=n)
-#     run_test(exercices)
+# ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 
-# if __name__ == "__main__":
-#     main(notion="dérivées", niveau="intermédiaire", n=2)
+def main(notion: str = "dérivées", niveau: str = "intermédiaire", n: int = 2):
+    exercices = generate_steps_test(notion=notion, niveau=niveau, n=n)
+    run_test(exercices)
+
+
+if __name__ == "__main__":
+    main(notion="dérivées", niveau="intermédiaire", n=2)
