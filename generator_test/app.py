@@ -3,6 +3,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
+import uvicorn
+import os
 from test_format_generator.QCM import generate_qcm_statement
 
 app = FastAPI()
@@ -47,7 +49,7 @@ async def get_notion(request: Request, data: Data):
     qcm_data = generate_qcm_statement(data.notion, niveau="Intermédiaire")
     print(qcm_data)
     return templates.TemplateResponse(
-        "qcm.html", {"request": request, "questions": [qcm_data]}
+        "qcm.html", {"request": request, "questions": qcm_data}
     )
 
 
