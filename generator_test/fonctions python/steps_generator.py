@@ -229,7 +229,7 @@ def run_test(exercices: list[dict]) -> None:
     score_total = 0
     max_total = 0
 
-    print_test_header(total_ex, "STEP BY STEP")
+    # print_test_header(total_ex, "STEP BY STEP")
 
     for i, ex in enumerate(exercices, 1):
         score_ex, nb_etapes = ask_exercice(i, total_ex, ex)

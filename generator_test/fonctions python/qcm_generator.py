@@ -16,7 +16,6 @@ from base_generator import (
     call_mistral,
     generate_test,
     display_score,
-    print_test_header,
     print_question_header,
     parse_json,
     logger,

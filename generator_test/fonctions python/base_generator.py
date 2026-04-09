@@ -178,8 +178,8 @@ def print_test_header(total: int, format_label: str) -> None:
 def print_question_header(index: int, total: int, extra: str = "") -> None:
     """Affiche l'en-tête d'une question individuelle."""
     print(f"\n{'─' * 50}")
-    label = f"  Question {index}/{total}"
-    if extra:
-        label += f"  [{extra}]"
-    print(label)
-    print(f"{'─' * 50}")
+    # label = f"  Question {index}/{total}"
+    # if extra:
+    #     label += f"  [{extra}]"
+    # print(label)
+    # print(f"{'─' * 50}")
