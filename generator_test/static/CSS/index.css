@@ -22,7 +22,6 @@
 }
 
 
-
 button:hover {
     background: linear-gradient(130deg, rgb(128, 128, 128), rgb(255, 255, 255), rgb(223, 9, 251));
     cursor: pointer;
