@@ -9,6 +9,8 @@ import uvicorn
 import os
 >>>>>>> 846045f (Interconnexion between the different hmtl pages and the QCM generator)
 from test_format_generator.QCM import generate_qcm_statement
+# from generator_test.fonctions python.test_entrainement import generate_mixed_test
+
 
 app = FastAPI()
 
@@ -40,6 +42,21 @@ async def module_page(request: Request):
 @app.get("/index", response_class=HTMLResponse)
 async def index_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+# @app.post("/generate_exo")
+# async def get_notion(request: Request, data: Data):
+#     # Génère les questions avec la même logique que main.py
+#     qcm_data = generate_mixed_test(
+#         notion=data.notion,
+#         niveau="intermédiaire",  # ou récupéré de data
+#         n_qcm=5,
+#         n_qro=2,
+#         n_steps=1
+#     )
+#     return templates.TemplateResponse(
+#         "qcm.html", {"request": request, "questions": qcm_data}
+#     )
 
 
 # ── API
