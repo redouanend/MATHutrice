@@ -136,21 +136,6 @@ def generate_test(
     return questions
 
 
-def generate_test(
-    notion: str,
-    niveau: str,
-    nb_par_format: list[int],
-    fonctions_generatrices: list,
-) -> list[dict]:
-    """
-    Génère un test avec plusieurs formats de questions.
-
-    Paramètres :
-      nb_par_format : liste d'entiers, ex. [2, 3, 1]
-      fonctions_generatrices : liste de fonctions de même taille
-    """
-
-
 # SCORE FINAL (générique)
 
 
@@ -182,18 +167,19 @@ def display_score(score: int, total: int, format_label: str) -> None:
 
 # ─── HEADER DE TEST (générique) ───────────────────────────────────────────────
 
-# def print_test_header(total: int, format_label: str) -> None:
-#     """Affiche l'en-tête du test dans le terminal."""
-#     print(f"\n{'═' * 50}")
-#     print(f"  TEST {format_label} — {total} question(s)")
-#     print(f"{'═' * 50}")
+
+def print_test_header(total: int, format_label: str) -> None:
+    """Affiche l'en-tête du test dans le terminal."""
+    print(f"\n{'═' * 50}")
+    print(f"  TEST {format_label} — {total} question(s)")
+    print(f"{'═' * 50}")
 
 
-# def print_question_header(index: int, total: int, extra: str = "") -> None:
-#     """Affiche l'en-tête d'une question individuelle."""
-#     print(f"\n{'─' * 50}")
-#     label = f"  Question {index}/{total}"
-#     if extra:
-#         label += f"  [{extra}]"
-#     print(label)
-#     print(f"{'─' * 50}")
+def print_question_header(index: int, total: int, extra: str = "") -> None:
+    """Affiche l'en-tête d'une question individuelle."""
+    print(f"\n{'─' * 50}")
+    # label = f"  Question {index}/{total}"
+    # if extra:
+    #     label += f"  [{extra}]"
+    # print(label)
+    # print(f"{'─' * 50}")

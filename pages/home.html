@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <!--resp tel/tab-->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>MATHutrice — Accueil</title>
+
+  <!--font princ-->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /*vars de base*/
+    :root{
+      --purple-dark:#542365;
+      --purple-light:#8c52f0;
+      --pink-hot:#cb0a67;
+      --pink-soft:#f8abe0;
+      --white:#ffffff;
+      --text-dark:#1a0a20;
+    }
+
+    /*reset nav*/
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      min-height:100vh;
+      font-family:'Poppins',sans-serif;
+      color:var(--text-dark);
+
+      /*bg home ds le mood de module*/
+      background:
+        radial-gradient(circle at top right,rgba(248,171,224,0.22),transparent 24%),
+        radial-gradient(circle at left bottom,rgba(140,82,240,0.14),transparent 30%),
+        linear-gradient(135deg,var(--purple-dark) 0%,var(--pink-hot) 55%,var(--purple-light) 100%);
+    }
+
+    /*centre la page*/
+    .page{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 20px;
+    }
+
+    /*bloc principal*/
+    .home-shell{
+      width:100%;
+      max-width:980px;
+    }
+
+    /*zone top*/
+    .hero{
+      text-align:center;
+    }
+
+    .title{
+      color:white;
+      font-size:52px;
+      font-weight:800;
+      line-height:1.05;
+    }
+
+    /*resp mobile*/
+    @media (max-width:680px){
+      .title{
+        font-size:38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="home-shell">
+
+      <!--zone accueil-->
+      <section class="hero">
+        <h1 class="title">Discutons !</h1>
+      </section>
+
+    </div>
+  </div>
+</body>
+</html>
