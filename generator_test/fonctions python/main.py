@@ -100,6 +100,7 @@ def generate_mixed_test(
 
     if n_qcm > 0:
         qcms = generate_qcm_test(notion, niveau, n_qcm)
+        print
         for q in qcms:
             q["type"] = "qcm"
         test.extend(qcms)

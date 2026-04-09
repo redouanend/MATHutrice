@@ -19,8 +19,15 @@ La correction utilise la même logique double-passe que le QRO
 """
 
 from base_generator import (
-    call_mistral, generate_test, display_score,
-    print_test_header, print_question_header, parse_json, logger, client, MODEL
+    call_mistral,
+    generate_test,
+    display_score,
+    print_test_header,
+    print_question_header,
+    parse_json,
+    logger,
+    client,
+    MODEL,
 )
 from qro_generator import evaluate_answer  # même logique de correction
 
@@ -42,6 +49,7 @@ TROUS_FORMAT = """
   ]
 }
 """
+
 
 def build_prompt(notion: str, niveau: str) -> str:
     return f"""
@@ -79,6 +87,7 @@ Format attendu :
 
 # ─── PARSING & VALIDATION ─────────────────────────────────────────────────────
 
+
 def parse_and_validate(raw: str) -> dict:
     """
     Valide que la réponse brute de Mistral respecte le format phrases à trous.
@@ -86,8 +95,8 @@ def parse_and_validate(raw: str) -> dict:
     """
     data = parse_json(raw)
 
-    enonce          = data.get("enonce", "").strip()
-    phrases         = data.get("phrases", [])
+    enonce = data.get("enonce", "").strip()
+    phrases = data.get("phrases", [])
     correct_answers = data.get("correct_answers", [])
 
     if not enonce:
@@ -115,18 +124,23 @@ def parse_and_validate(raw: str) -> dict:
     for i, phrase in enumerate(phrases):
         count = phrase.count("___")
         if count == 0:
-            raise ValueError(f"Phrase {i+1} ne contient pas de trou '___' : '{phrase}'")
+            raise ValueError(
+                f"Phrase {i + 1} ne contient pas de trou '___' : '{phrase}'"
+            )
         if count > 1:
-            raise ValueError(f"Phrase {i+1} contient {count} trous (max 1 attendu) : '{phrase}'")
+            raise ValueError(
+                f"Phrase {i + 1} contient {count} trous (max 1 attendu) : '{phrase}'"
+            )
 
     return {
-        "enonce":          enonce,
-        "phrases":         [p.strip() for p in phrases],
+        "enonce": enonce,
+        "phrases": [p.strip() for p in phrases],
         "correct_answers": [a.strip() for a in correct_answers],
     }
 
 
 # ─── GÉNÉRATION ───────────────────────────────────────────────────────────────
+
 
 def generate_trous_question(notion: str, niveau: str) -> dict | None:
     """Génère un exercice phrases à trous validé. Retourne None si échec."""
@@ -144,6 +158,7 @@ def generate_trous_test(notion: str, niveau: str, n: int) -> list[dict]:
 
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
+
 def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     """
     Pose un exercice phrases à trous dans le terminal.
@@ -156,9 +171,7 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
     score_ex = 0
     total_ex = len(ex["phrases"])
 
-    for i, (phrase, correct) in enumerate(
-        zip(ex["phrases"], ex["correct_answers"]), 1
-    ):
+    for i, (phrase, correct) in enumerate(zip(ex["phrases"], ex["correct_answers"]), 1):
         print(f"  {i}. {phrase}")
         user_answer = input("     Votre réponse : ").strip()
 
@@ -191,21 +204,22 @@ def run_test(exercices: list[dict]) -> None:
         print("Aucun exercice disponible. Abandon.")
         return
 
-    total_ex  = len(exercices)
+    total_ex = len(exercices)
     score_total = 0
-    max_total   = 0
+    max_total = 0
 
     print_test_header(total_ex, "PHRASES À TROUS")
 
     for i, ex in enumerate(exercices, 1):
         score_ex, nb_phrases = ask_exercice(i, total_ex, ex)
         score_total += score_ex
-        max_total   += nb_phrases
+        max_total += nb_phrases
 
     display_score(score_total, max_total, "PHRASES À TROUS")
 
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
+
 
 def main(notion: str = "nombres complexes", niveau: str = "intermédiaire", n: int = 2):
     exercices = generate_trous_test(notion=notion, niveau=niveau, n=n)
