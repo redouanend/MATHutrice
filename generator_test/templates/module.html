@@ -386,44 +386,9 @@ historyData.forEach(item => {
 // puis redirige vers index.html pour que Flask affiche l'exercice généré.
 
 async function startTraining() {
-  const btn = document.getElementById('trainBtn');
-  const titre = document.querySelector('.module-title').textContent;
-
-  btn.disabled = true;
-  btn.classList.add('loading');
-  btn.querySelector('.btn-label').textContent = 'Chargement…';
-
-  try {
-    // 1️⃣ Envoi de la requête POST vers FastAPI
-    const res = await fetch('/generate_exo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notion: titre })
-    });
-
-    if (!res.ok) throw new Error(`Erreur serveur ${res.status}`);
-
-    // 2️⃣ Récupération du HTML renvoyé par FastAPI
-    const html = await res.text();
-
-    // 3️⃣ Injecte le QCM dans le conteneur
-    const container = document.getElementById('qcm-container');
-    container.innerHTML = html;
-    container.style.display = 'block';
-
-    // 4️⃣ Masque le reste de la page
-    document.querySelector('.desc-card').style.display = 'none';
-    document.querySelector('.train-container').style.display = 'none';
-    document.querySelector('.module-progress-section').style.display = 'none';
-    document.querySelector('.history-grid').style.display = 'none';
-
-  } catch (err) {
-    console.error(err);
-    showToast('Impossible de contacter le serveur. Vérifiez votre connexion.', true);
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    btn.querySelector('.btn-label').textContent = "🎯 M'entraîner";
-  }
+  const titre = document.querySelector('.module-title').textContent.trim();
+  // Redirige vers qcm.html en passant la notion dans l'URL
+  window.location.href = `/qcm?notion=${encodeURIComponent(titre)}&niveau=${encodeURIComponent(NIVEAU)}&n=9`;
 }
 
 function showToast(msg, isError = false) {

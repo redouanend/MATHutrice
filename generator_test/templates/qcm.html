@@ -1,788 +1,665 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exercices</title>
-<style>
-  :root {
-    --color-bg: #f8f7f4;
-    --color-surface: #ffffff;
-    --color-border: rgba(0,0,0,0.12);
-    --color-border-strong: rgba(0,0,0,0.22);
-    --color-text-primary: #1a1a18;
-    --color-text-secondary: #5f5e5a;
-    --color-text-muted: #888780;
-    --color-purple-50: #EEEDFE;
-    --color-purple-100: #CECBF6;
-    --color-purple-600: #534AB7;
-    --color-purple-800: #3C3489;
-    --color-teal-50: #E1F5EE;
-    --color-teal-100: #9FE1CB;
-    --color-teal-600: #0F6E56;
-    --color-teal-800: #085041;
-    --color-coral-50: #FAECE7;
-    --color-coral-100: #F5C4B3;
-    --color-coral-600: #993C1D;
-    --color-amber-50: #FAEEDA;
-    --color-amber-100: #FAC775;
-    --color-amber-600: #854F0B;
-    --color-green-50: #EAF3DE;
-    --color-green-600: #3B6D11;
-    --color-red-50: #FCEBEB;
-    --color-red-600: #A32D2D;
-    --color-blue-50: #E6F1FB;
-    --color-blue-600: #185FA5;
-    --color-blue-800: #0C447C;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MATHutrice — QCM</title>
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: var(--color-bg);
-    color: var(--color-text-primary);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="window._katexReady=true; document.querySelectorAll('.math-render').forEach(renderMath)"></script>
 
-  /* ── Header ── */
-  .page-header {
-    background: var(--color-surface);
-    border-bottom: 0.5px solid var(--color-border);
-    padding: 0.875rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+  <style>
+    :root {
+      --purple-dark:  #542365;
+      --purple-light: #8c52f0;
+      --pink-soft:    #f8abe0;
+      --red-main:     #ca1328;
+      --red-coral:    #ff5757;
+      --pink-hot:     #cb0a67;
+      --bg:           #fdf5fb;
+      --white:        #ffffff;
+      --text-dark:    #1a0a20;
+      --text-muted:   #7a5a85;
+      --text-light:   #b89ec5;
+      --border:       rgba(84,35,101,0.12);
+      --shadow:       0 4px 24px rgba(84,35,101,0.08);
+      --shadow-hover: 0 8px 40px rgba(140,82,240,0.18);
+      --radius:       18px;
+      --radius-sm:    10px;
+      --green:        #2a7a2a;
+      --green-bg:     #edf7ed;
+      --green-border: #b4d9b0;
+      --red-err:      #b01c1c;
+      --red-bg:       #fdecea;
+      --red-border:   #f0c0bb;
+    }
 
-  .btn-back {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: 0.5px solid var(--color-border-strong);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-back:hover { background: var(--color-bg); }
-  .btn-back svg { width: 14px; height: 14px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .header-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-  }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  /* ── Score bar ── */
-  .score-bar {
-    background: var(--color-surface);
-    border-bottom: 0.5px solid var(--color-border);
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    /* ── HEADER (identique à module.html) ───────────────────────── */
+    .header {
+      background: linear-gradient(135deg, var(--purple-dark) 0%, #7a1a5c 50%, var(--pink-hot) 100%);
+      position: relative; overflow: hidden; padding: 0;
+    }
+    .header::before {
+      content: ''; position: absolute;
+      top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      background: rgba(248,171,224,0.15); border-radius: 50%;
+    }
+    .header::after {
+      content: ''; position: absolute;
+      bottom: -40px; left: 20%;
+      width: 180px; height: 180px;
+      background: rgba(140,82,240,0.2); border-radius: 50%;
+    }
+    .header-inner {
+      position: relative; z-index: 1;
+      padding: 28px 40px 32px;
+    }
 
-  .score-label {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    white-space: nowrap;
-  }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 7px 16px; border-radius: 30px;
+      cursor: pointer; transition: all 0.2s; margin-bottom: 24px;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+    .back-btn svg   { width: 14px; height: 14px; }
 
-  .progress-track {
-    flex: 1;
-    height: 6px;
-    background: var(--color-bg);
-    border-radius: 99px;
-    border: 0.5px solid var(--color-border);
-    overflow: hidden;
-  }
+    .header-top-row {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px;
+      flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .header-title-block h1 {
+      font-size: 34px; font-weight: 800; color: white;
+      line-height: 1.15; margin-bottom: 6px;
+    }
+    .header-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .chip {
+      font-size: 11px; font-weight: 600; letter-spacing: .05em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 30px;
+      background: rgba(255,255,255,0.18); color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
 
-  .progress-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--color-purple-600);
-    border-radius: 99px;
-    transition: width 0.4s ease;
-  }
+    /* Barre de progression dans le header */
+    .progress-header {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(0,0,0,0.15);
+      border-radius: var(--radius); padding: 14px 20px;
+      backdrop-filter: blur(10px);
+    }
+    .progress-info { flex: 1; }
+    .progress-label {
+      font-size: 12px; color: rgba(255,255,255,0.75); font-weight: 500;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+    }
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.15);
+      border-radius: 30px; height: 8px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--pink-soft), var(--purple-light));
+      height: 100%; border-radius: 30px;
+      transition: width 0.7s cubic-bezier(.4,0,.2,1); width: 0%;
+    }
+    .progress-pct {
+      font-size: 22px; font-weight: 700; color: white;
+      min-width: 52px; text-align: right;
+    }
 
-  .score-count {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    min-width: 48px;
-    text-align: right;
-  }
+    /* ── MAIN ───────────────────────────────────────────────────── */
+    .main { max-width: 760px; margin: 0 auto; padding: 40px 40px 80px; }
 
-  /* ── Main layout ── */
-  .main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
+    /* ── LOADING ─────────────────────────────────────────────────── */
+    #loading { text-align: center; padding: 80px 20px; }
+    .spinner {
+      width: 44px; height: 44px; margin: 0 auto 20px;
+      border: 3px solid var(--border);
+      border-top-color: var(--purple-light);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    .loading-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
+    .loading-hint  { font-size: 13px; color: var(--text-light); }
 
-  /* ── Question card ── */
-  .q-card {
-    background: var(--color-surface);
-    border: 0.5px solid var(--color-border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
+    /* ── ERROR ───────────────────────────────────────────────────── */
+    #error-screen {
+      display: none; text-align: center; padding: 60px 20px;
+    }
+    .error-emoji { font-size: 36px; margin-bottom: 14px; }
+    .error-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+    .error-detail {
+      font-size: 12px; color: var(--text-light);
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      margin-bottom: 20px; text-align: left; word-break: break-all;
+    }
 
-  .q-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1.125rem 1.25rem 0.875rem;
-    border-bottom: 0.5px solid var(--color-border);
-  }
+    /* ── QUESTION CARD ───────────────────────────────────────────── */
+    .q-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      animation: rise .3s ease;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-  .q-badge {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 9px;
-    border-radius: 99px;
-    border: 0.5px solid;
-  }
+    .q-label {
+      font-size: 11px; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--text-light);
+      margin-bottom: 14px;
+    }
+    .q-text {
+      font-size: 17px; font-weight: 500; line-height: 1.7;
+      color: var(--text-dark); margin-bottom: 24px;
+    }
 
-  .q-badge.type-qcm {
-    background: var(--color-purple-50);
-    color: var(--color-purple-800);
-    border-color: var(--color-purple-100);
-  }
-  .q-badge.type-qro {
-    background: var(--color-teal-50);
-    color: var(--color-teal-800);
-    border-color: var(--color-teal-100);
-  }
-  .q-badge.type-sbs {
-    background: var(--color-amber-50);
-    color: var(--color-amber-600);
-    border-color: var(--color-amber-100);
-  }
+    /* ── OPTIONS ─────────────────────────────────────────────────── */
+    .options { display: flex; flex-direction: column; gap: 10px; }
 
-  .q-num {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    white-space: nowrap;
-    padding-top: 2px;
-  }
+    .opt {
+      width: 100%; text-align: left;
+      padding: 14px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--white); color: var(--text-dark);
+      font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 1.5;
+      cursor: pointer;
+      display: flex; align-items: flex-start; gap: 12px;
+      transition: border-color .15s, background .15s, transform .12s;
+    }
+    .opt:hover:not(:disabled) {
+      border-color: var(--purple-light);
+      background: #fdf5fb;
+      transform: translateX(3px);
+    }
+    .opt:disabled { cursor: default; transform: none; }
 
-  .q-text {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    flex: 1;
-    line-height: 1.5;
-  }
+    .opt-letter {
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      color: var(--text-light); min-width: 18px;
+      padding-top: 1px; flex-shrink: 0;
+      background: var(--bg); border-radius: 5px;
+      padding: 2px 6px; margin-top: 1px;
+    }
+    .opt-body { flex: 1; }
+    .opt-icon { margin-left: auto; flex-shrink: 0; font-size: 15px; display: none; padding-top: 1px; }
 
-  .q-body { padding: 1rem 1.25rem 1.25rem; }
+    /* États */
+    .opt.correct {
+      border-color: var(--green-border);
+      background: var(--green-bg);
+    }
+    .opt.correct .opt-letter { background: var(--green-bg); color: var(--green); }
+    .opt.correct .opt-icon   { display: block; }
 
-  /* ── QCM options ── */
-  .options-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+    .opt.wrong {
+      border-color: var(--red-border);
+      background: var(--red-bg);
+    }
+    .opt.wrong .opt-letter { background: var(--red-bg); color: var(--red-err); }
+    .opt.wrong .opt-icon   { display: block; }
 
-  .option-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border: 0.5px solid var(--color-border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.12s, border-color 0.12s;
-    font-size: 14px;
-    color: var(--color-text-primary);
-    line-height: 1.4;
-  }
+    /* ── FEEDBACK ────────────────────────────────────────────────── */
+    .feedback {
+      margin-top: 16px; padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px; line-height: 1.65;
+      display: none; animation: rise .2s ease;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok   { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+    .feedback.ko   { background: var(--red-bg);   border: 1px solid var(--red-border);   color: var(--red-err); }
 
-  .option-label:hover { background: var(--color-bg); border-color: var(--color-border-strong); }
+    .feedback-title { font-weight: 700; margin-bottom: 4px; font-size: 14px; }
 
-  .option-label input[type="radio"] { display: none; }
+    /* ── CARD FOOTER ─────────────────────────────────────────────── */
+    .card-footer {
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end;
+    }
 
-  .option-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-border-strong);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.12s, border-color 0.12s;
-  }
+    /* ── BOUTON PRINCIPAL (gradient identique à train-btn) ───────── */
+    .btn-next {
+      background: linear-gradient(135deg, var(--purple-dark), var(--red-main));
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      padding: 13px 36px; border: none; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all .25s ease;
+      box-shadow: 0 4px 14px rgba(84,35,101,0.25);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-next:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(84,35,101,0.35);
+    }
+    .btn-next:active:not(:disabled) { transform: scale(0.97); }
+    .btn-next:disabled {
+      opacity: 0.4; cursor: default;
+      transform: none; box-shadow: none;
+    }
 
-  .option-label.selected .option-dot {
-    background: var(--color-purple-600);
-    border-color: var(--color-purple-600);
-  }
+    .btn-ghost {
+      background: none; color: var(--text-muted);
+      border: 1.5px solid var(--border);
+      font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+      padding: 11px 22px; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all .15s; margin-right: 10px;
+    }
+    .btn-ghost:hover { background: var(--bg); border-color: var(--purple-light); color: var(--purple-dark); }
 
-  .option-label.selected .option-dot::after {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: white;
-  }
+    /* ── SCORE SCREEN ────────────────────────────────────────────── */
+    #score-screen {
+      display: none;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-hover);
+      overflow: hidden;
+      animation: rise .4s ease;
+    }
+    #score-screen.show { display: block; }
 
-  .option-label.selected {
-    background: var(--color-purple-50);
-    border-color: var(--color-purple-100);
-  }
+    .score-header {
+      background: linear-gradient(135deg, var(--purple-dark) 0%, #7a1a5c 50%, var(--pink-hot) 100%);
+      padding: 40px 36px; text-align: center; position: relative; overflow: hidden;
+    }
+    .score-header::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: rgba(248,171,224,0.15); border-radius: 50%;
+    }
+    .score-num {
+      font-size: 76px; font-weight: 800; color: white;
+      line-height: 1; margin-bottom: 6px; position: relative;
+    }
+    .score-num sup { font-size: 32px; font-weight: 600; vertical-align: super; opacity: .8; }
+    .score-caption { font-size: 15px; color: rgba(255,255,255,0.8); font-weight: 400; position: relative; }
 
-  /* Feedback après validation */
-  .option-label.correct {
-    background: var(--color-green-50);
-    border-color: #C0DD97;
-  }
-  .option-label.correct .option-dot {
-    background: var(--color-green-600);
-    border-color: var(--color-green-600);
-  }
-  .option-label.incorrect {
-    background: var(--color-red-50);
-    border-color: #F7C1C1;
-  }
-  .option-label.incorrect .option-dot {
-    background: var(--color-red-600);
-    border-color: var(--color-red-600);
-  }
+    .score-body { padding: 32px 36px 36px; }
 
-  /* ── QRO textarea ── */
-  .qro-field {
-    width: 100%;
-    border: 0.5px solid var(--color-border-strong);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--color-text-primary);
-    background: var(--color-surface);
-    resize: vertical;
-    min-height: 90px;
-    transition: border-color 0.15s;
-    outline: none;
-  }
-  .qro-field:focus { border-color: var(--color-purple-600); }
+    .score-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 32px;
+    }
+    .stat-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px 12px; text-align: center;
+    }
+    .stat-val  { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: var(--text-dark); }
+    .stat-lbl  { font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); }
+    .stat-box.g .stat-val { color: var(--green); }
+    .stat-box.r .stat-val { color: var(--red-err); }
 
-  .qro-hint {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    margin-top: 6px;
-  }
+    .score-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .score-actions .btn-next { padding: 13px 40px; }
 
-  .qro-correction {
-    display: none;
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: var(--color-teal-50);
-    border: 0.5px solid var(--color-teal-100);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--color-teal-800);
-    line-height: 1.5;
-  }
+    /* ── TOAST ───────────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text-dark); color: white;
+      font-size: 13px; font-weight: 500;
+      padding: 12px 22px; border-radius: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      opacity: 0; pointer-events: none;
+      transition: all .3s ease; z-index: 9999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--red-main); }
 
-  .qro-correction strong {
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--color-teal-600);
-    margin-bottom: 4px;
-  }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── SBS steps ── */
-  .sbs-intro {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    background: var(--color-amber-50);
-    border-radius: 8px;
-    border: 0.5px solid var(--color-amber-100);
-  }
-
-  .steps-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .step-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--color-bg);
-    border: 0.5px solid var(--color-border-strong);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    margin-top: 2px;
-  }
-
-  .step-field {
-    flex: 1;
-    border: 0.5px solid var(--color-border-strong);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--color-text-primary);
-    background: var(--color-surface);
-    resize: none;
-    min-height: 60px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .step-field:focus { border-color: var(--color-amber-600); }
-
-  .step-label {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    margin-bottom: 4px;
-  }
-
-  /* ── Barre de validation ── */
-  .validate-bar {
-    position: sticky;
-    bottom: 0;
-    background: var(--color-surface);
-    border-top: 0.5px solid var(--color-border);
-    padding: 0.875rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .validate-info {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-  }
-
-  .btn-validate {
-    background: var(--color-purple-600);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 22px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-  }
-  .btn-validate:hover { background: var(--color-purple-800); }
-  .btn-validate:active { transform: scale(0.98); }
-  .btn-validate:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  /* ── Overlay modal ── */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-  }
-  .overlay.visible { display: flex; }
-
-  .modal {
-    background: var(--color-surface);
-    border-radius: 16px;
-    border: 0.5px solid var(--color-border);
-    padding: 2rem 1.75rem 1.75rem;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .modal-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    margin: 0 auto 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-  }
-
-  .modal-icon.great { background: var(--color-teal-50); }
-  .modal-icon.good  { background: var(--color-purple-50); }
-  .modal-icon.ok    { background: var(--color-amber-50); }
-  .modal-icon.poor  { background: var(--color-red-50); }
-
-  .modal-title {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-
-  .modal-score {
-    font-size: 40px;
-    font-weight: 500;
-    color: var(--color-purple-600);
-    margin: 0.5rem 0 0.25rem;
-    line-height: 1;
-  }
-
-  .modal-total {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    margin-bottom: 1.25rem;
-  }
-
-  .modal-message {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    margin-bottom: 1.75rem;
-    line-height: 1.5;
-  }
-
-  .btn-finish {
-    width: 100%;
-    background: var(--color-purple-600);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 11px 0;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-finish:hover { background: var(--color-purple-800); }
-</style>
+    @media (max-width: 600px) {
+      .header-inner { padding: 20px; }
+      .header-title-block h1 { font-size: 26px; }
+      .main { padding: 24px 16px 64px; }
+      .q-card { padding: 22px 18px; }
+      .score-num { font-size: 56px; }
+      .score-stats { grid-template-columns: 1fr 1fr; }
+      .score-body { padding: 22px 18px 28px; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
-<header class="page-header">
-  <button class="btn-back" onclick="retourModule()">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M10 12L6 8l4-4"/>
-    </svg>
-    Retour
-  </button>
-  <span class="header-title" id="header-title">Exercices</span>
-  <span style="width:72px"></span>
-</header>
+<!-- ── HEADER ──────────────────────────────────────────────────── -->
+<div class="header">
+  <div class="header-inner">
 
-<!-- ── Score bar ── -->
-<div class="score-bar">
-  <span class="score-label">Progression</span>
-  <div class="progress-track">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-  <span class="score-count" id="score-display">0 / 0</span>
-</div>
+    <a class="back-btn" id="back-btn" href="/">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 3L5 8l5 5"/>
+      </svg>
+      Retour au module
+    </a>
 
-<!-- ── Questions ── -->
-<main class="main" id="questions-container"></main>
+    <div class="header-top-row">
+      <div class="header-title-block">
+        <h1 id="header-title">QCM</h1>
+        <div class="header-chips">
+          <span class="chip" id="chip-notion">—</span>
+          <span class="chip" id="chip-niveau">—</span>
+        </div>
+      </div>
+    </div>
 
-<!-- ── Bouton Valider ── -->
-<div class="validate-bar">
-  <span class="validate-info" id="validate-info">Répondez à toutes les questions</span>
-  <button class="btn-validate" id="btn-validate" onclick="validateAll()">Valider</button>
-</div>
+    <div class="progress-header">
+      <div class="progress-info">
+        <div class="progress-label">
+          <span id="prog-label">Question 1 / 9</span>
+          <span id="prog-questions">0 répondue(s)</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="prog-fill"></div>
+        </div>
+      </div>
+      <div class="progress-pct" id="prog-pct">0%</div>
+    </div>
 
-<!-- ── Modal score ── -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="modal-icon" id="modal-icon"></div>
-    <p class="modal-title" id="modal-title">Exercice terminé !</p>
-    <div class="modal-score" id="modal-score">0</div>
-    <div class="modal-total" id="modal-total">/ 0 questions</div>
-    <p class="modal-message" id="modal-message"></p>
-    <button class="btn-finish" onclick="retourModule()">Terminer</button>
   </div>
 </div>
+
+<!-- ── MAIN ────────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- LOADING -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p class="loading-title">Génération des questions…</p>
+    <p class="loading-hint">Mistral prépare vos exercices, quelques secondes.</p>
+  </div>
+
+  <!-- ERROR -->
+  <div id="error-screen">
+    <p class="error-emoji">⚠️</p>
+    <p class="error-title">Impossible de charger les questions</p>
+    <p class="error-detail" id="error-detail"></p>
+    <button class="btn-next" onclick="startSession()">Réessayer</button>
+  </div>
+
+  <!-- QUESTION SLOT -->
+  <div id="q-slot"></div>
+
+  <!-- SCORE -->
+  <div id="score-screen">
+    <div class="score-header">
+      <p class="score-num" id="score-num">—</p>
+      <p class="score-caption" id="score-caption">—</p>
+    </div>
+    <div class="score-body">
+      <div class="score-stats">
+        <div class="stat-box g">
+          <div class="stat-val" id="stat-ok">—</div>
+          <div class="stat-lbl">Correctes</div>
+        </div>
+        <div class="stat-box r">
+          <div class="stat-val" id="stat-ko">—</div>
+          <div class="stat-lbl">Incorrectes</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-tot">—</div>
+          <div class="stat-lbl">Questions</div>
+        </div>
+      </div>
+      <div class="score-actions">
+        <button class="btn-ghost" onclick="startSession()">Recommencer</button>
+        <button class="btn-next" onclick="goBack()">← Retour au module</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
 
 <script>
-/* ════════════════════════════════════════════════
-   DATA  — injectée par Jinja2
-   ════════════════════════════════════════════════ */
-const QUESTIONS = JSON.parse('{{ questions | tojson | safe }}');
-/* Chaque question a un champ "type" : "qcm" | "qro" | "sbs"
-   Structure QCM  : { type, question, options: [], answer: str }
-   Structure QRO  : { type, question, answer: str }
-   Structure SBS  : { type, question, steps: [{ label, answer }] }
-*/
+/* ── CONFIG ──────────────────────────────────────────────────────── */
+const API_URL = "/generate_qcm";
+const DEFAULTS = { notion: "trigonométrie", niveau: "intermédiaire", n: 9 };
 
-/* ── Config libellés ── */
-const TYPE_LABELS = {
-  qcm: 'Choix multiple',
-  qro: 'Réponse ouverte',
-  sbs: 'Étape par étape',
-};
+/* ── STATE ───────────────────────────────────────────────────────── */
+let questions = [];
+let results   = [];   // true | false
+let cursor    = 0;
+let urlParams = {};
 
-const MESSAGES = [
-  { min: 0.9,  icon: '🎉', cls: 'great', title: 'Excellent !',     msg: 'Maîtrise parfaite. Continue comme ça !' },
-  { min: 0.7,  icon: '👍', cls: 'good',  title: 'Bien joué !',     msg: 'Bon travail, encore quelques points à consolider.' },
-  { min: 0.5,  icon: '💡', cls: 'ok',    title: 'Pas mal !',       msg: 'La moitié est acquise. Revoyez les erreurs.' },
-  { min: 0,    icon: '📚', cls: 'poor',  title: 'À retravailler',  msg: 'Ne vous découragez pas, relisez le module.' },
-];
+/* ── DOM ─────────────────────────────────────────────────────────── */
+const $loading  = document.getElementById("loading");
+const $error    = document.getElementById("error-screen");
+const $errDet   = document.getElementById("error-detail");
+const $qSlot    = document.getElementById("q-slot");
+const $score    = document.getElementById("score-screen");
 
-/* ── Rendu ── */
-const container = document.getElementById('questions-container');
-const total = QUESTIONS.length;
-let answered = 0;
-let validated = false;
-
-QUESTIONS.forEach((q, i) => {
-  const card = document.createElement('div');
-  card.className = 'q-card';
-  card.id = `card-${i}`;
-  card.innerHTML = buildCard(q, i);
-  container.appendChild(card);
-  attachListeners(card, q, i);
-});
-
-document.getElementById('header-title').textContent =
-  `{{ notion | default("Exercices") | capitalize }} — {{ niveau | default("") }}`;
-updateScoreBar();
-
-/* ── Build card HTML ── */
-function buildCard(q, i) {
-  const type = q.type || 'qcm';
-  return `
-    <div class="q-header">
-      <span class="q-badge type-${type}">${TYPE_LABELS[type] || type}</span>
-      <span class="q-num">Question ${i + 1} / ${total}</span>
-    </div>
-    <div class="q-body">
-      <p class="q-text" style="margin-bottom:1rem;">${escHtml(q.question)}</p>
-      ${buildBody(q, i)}
-    </div>`;
+/* ── KATEX ───────────────────────────────────────────────────────── */
+function renderMath(el) {
+  if (!window._katexReady || !window.renderMathInElement) return;
+  renderMathInElement(el, {
+    delimiters: [
+      { left: "$$",  right: "$$",  display: true  },
+      { left: "$",   right: "$",   display: false },
+      { left: "\\(", right: "\\)", display: false },
+      { left: "\\[", right: "\\]", display: true  },
+    ],
+    throwOnError: false,
+  });
 }
 
-function buildBody(q, i) {
-  const type = q.type || 'qcm';
+/* ── FETCH ───────────────────────────────────────────────────────── */
+async function startSession() {
+  show($loading); hide($error); hide($score);
+  $qSlot.innerHTML = "";
+  questions = []; results = []; cursor = 0;
 
-  if (type === 'qcm') {
-    const items = (q.options || []).map((opt, j) => `
-      <li>
-        <label class="option-label" id="opt-${i}-${j}">
-          <input type="radio" name="q${i}" value="${j}" onchange="onRadioChange(${i})">
-          <span class="option-dot"></span>
-          ${escHtml(opt)}
-        </label>
-      </li>`).join('');
-    return `<ul class="options-list">${items}</ul>`;
-  }
+  const p = new URLSearchParams(window.location.search);
+  urlParams = {
+    notion: p.get("notion") || DEFAULTS.notion,
+    niveau: p.get("niveau") || DEFAULTS.niveau,
+    n:      parseInt(p.get("n")) || DEFAULTS.n,
+  };
 
-  if (type === 'qro') {
-    return `
-      <textarea class="qro-field" id="qro-${i}" placeholder="Rédigez votre réponse…"
-        oninput="onTextChange(${i})"></textarea>
-      <p class="qro-hint">Exprimez votre raisonnement librement.</p>
-      <div class="qro-correction" id="qro-correction-${i}">
-        <strong>Réponse attendue</strong>
-        <span id="qro-answer-${i}"></span>
-      </div>`;
-  }
+  // Met à jour le header
+  const notionLabel = urlParams.notion.charAt(0).toUpperCase() + urlParams.notion.slice(1);
+  document.getElementById("chip-notion").textContent = notionLabel;
+  document.getElementById("chip-niveau").textContent = urlParams.niveau;
+  document.getElementById("header-title").textContent = "QCM · " + notionLabel;
 
-  if (type === 'sbs') {
-    const steps = (q.steps || []).map((s, j) => `
-      <div class="step-item">
-        <div class="step-num">${j + 1}</div>
-        <div style="flex:1">
-          <p class="step-label">${escHtml(s.label || `Étape ${j+1}`)}</p>
-          <textarea class="step-field" id="sbs-${i}-${j}"
-            placeholder="Votre réponse pour cette étape…"
-            oninput="onTextChange(${i})"></textarea>
-        </div>
-      </div>`).join('');
-    return `
-      <p class="sbs-intro">Remplissez chaque étape de la résolution dans l'ordre.</p>
-      <div class="steps-list">${steps}</div>
-      <div class="qro-correction" id="qro-correction-${i}">
-        <strong>Correction détaillée</strong>
-        <span id="qro-answer-${i}"></span>
-      </div>`;
-  }
+  // Lien retour vers le module
+  document.getElementById("back-btn").href =
+    `/module.html?module=${encodeURIComponent(urlParams.notion)}&niveau=${encodeURIComponent(urlParams.niveau)}`;
 
-  return '';
-}
+  updateProgress(0);
 
-/* ── Listeners ── */
-function attachListeners(card, q, i) {}
-
-function onRadioChange(i) {
-  if (validated) return;
-  const q = QUESTIONS[i];
-  const selected = document.querySelector(`input[name="q${i}"]:checked`);
-  markAnswered(i, !!selected);
-}
-
-function onTextChange(i) {
-  if (validated) return;
-  const q = QUESTIONS[i];
-  const type = q.type || 'qcm';
-  let hasContent = false;
-  if (type === 'qro') {
-    const ta = document.getElementById(`qro-${i}`);
-    hasContent = ta && ta.value.trim().length > 0;
-  } else if (type === 'sbs') {
-    const steps = q.steps || [];
-    hasContent = steps.every((_, j) => {
-      const f = document.getElementById(`sbs-${i}-${j}`);
-      return f && f.value.trim().length > 0;
+  try {
+    const res  = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(urlParams),
     });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Erreur API");
+
+    questions = data.questions;
+    results   = new Array(questions.length).fill(null);
+    document.getElementById("stat-tot").textContent = questions.length;
+
+    hide($loading);
+    renderCard(0);
+
+  } catch (err) {
+    hide($loading); show($error);
+    $errDet.textContent = err.message;
   }
-  markAnswered(i, hasContent);
 }
 
-const answeredSet = new Set();
-function markAnswered(i, state) {
-  if (state) answeredSet.add(i);
-  else answeredSet.delete(i);
-  updateScoreBar();
+/* ── RENDER CARD ─────────────────────────────────────────────────── */
+function renderCard(idx) {
+  $score.classList.remove("show");
+  updateProgress(idx);
+
+  const q       = questions[idx];
+  const letters = ["A", "B", "C", "D", "E"];
+  const isLast  = idx === questions.length - 1;
+
+  const optsHTML = q.options.map((opt, i) => `
+    <button class="opt math-render" data-i="${i}"
+      onclick="handleAnswer(${idx}, ${i}, this)">
+      <span class="opt-letter">${letters[i]}</span>
+      <span class="opt-body">${opt}</span>
+      <span class="opt-icon">${i === 0 ? '' : ''}</span>
+    </button>
+  `).join("");
+
+  const card = document.createElement("div");
+  card.className = "q-card";
+  card.innerHTML = `
+    <p class="q-label">Question ${idx + 1} sur ${questions.length}</p>
+    <p class="q-text math-render">${q.question}</p>
+    <div class="options">${optsHTML}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="card-footer">
+      <button class="btn-next" id="btn-next"
+        onclick="goNext(${idx})" disabled>
+        ${isLast ? "Voir mes résultats →" : "Question suivante →"}
+      </button>
+    </div>
+  `;
+
+  $qSlot.innerHTML = "";
+  $qSlot.appendChild(card);
+
+  card.querySelectorAll(".math-render").forEach(renderMath);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ── Score bar ── */
-function updateScoreBar() {
-  const n = answeredSet.size;
-  document.getElementById('score-display').textContent = `${n} / ${total}`;
-  document.getElementById('progress-fill').style.width = total > 0 ? `${(n/total)*100}%` : '0%';
-  document.getElementById('validate-info').textContent =
-    n === total ? 'Toutes les questions sont remplies !' : `${total - n} question(s) sans réponse`;
-}
+/* ── ANSWER ──────────────────────────────────────────────────────── */
+function handleAnswer(qIdx, choiceIdx, btn) {
+  const q = questions[qIdx];
+  const correctIdx = q.options.findIndex(
+    o => o.trim() === String(q.answer).trim()
+  );
 
-/* ── Validation ── */
-function validateAll() {
-  if (validated) return;
-  validated = true;
-
-  let score = 0;
-
-  QUESTIONS.forEach((q, i) => {
-    const type = q.type || 'qcm';
-
-    if (type === 'qcm') {
-      const sel = document.querySelector(`input[name="q${i}"]:checked`);
-      const correctIdx = q.options ? q.options.indexOf(q.answer) : -1;
-      q.options && q.options.forEach((_, j) => {
-        const lbl = document.getElementById(`opt-${i}-${j}`);
-        if (!lbl) return;
-        lbl.style.pointerEvents = 'none';
-        if (j === correctIdx) lbl.classList.add('correct');
-        if (sel && parseInt(sel.value) === j && j !== correctIdx) lbl.classList.add('incorrect');
-      });
-      if (sel && q.options && q.options[parseInt(sel.value)] === q.answer) score++;
-
-    } else if (type === 'qro') {
-      /* QRO : afficher la réponse attendue */
-      const corr = document.getElementById(`qro-correction-${i}`);
-      const ans  = document.getElementById(`qro-answer-${i}`);
-      if (corr) corr.style.display = 'block';
-      if (ans)  ans.textContent = q.answer || '—';
-      const ta = document.getElementById(`qro-${i}`);
-      if (ta) ta.disabled = true;
-      /* Comptabilisé si l'étudiant a répondu quelque chose */
-      if (ta && ta.value.trim().length > 0) score += 0.5; // partiel
-
-    } else if (type === 'sbs') {
-      const corr = document.getElementById(`qro-correction-${i}`);
-      const ans  = document.getElementById(`qro-answer-${i}`);
-      if (corr) corr.style.display = 'block';
-      if (ans) {
-        const steps = q.steps || [];
-        ans.innerHTML = steps.map((s, j) =>
-          `<div style="margin-top:6px"><em>${escHtml(s.label || `Étape ${j+1}`)}</em> : ${escHtml(s.answer || '—')}</div>`
-        ).join('');
-      }
-      (q.steps || []).forEach((_, j) => {
-        const f = document.getElementById(`sbs-${i}-${j}`);
-        if (f) f.disabled = true;
-      });
-      const allFilled = (q.steps || []).every((_, j) => {
-        const f = document.getElementById(`sbs-${i}-${j}`);
-        return f && f.value.trim().length > 0;
-      });
-      if (allFilled) score += 0.5;
+  const allOpts = btn.closest(".options").querySelectorAll(".opt");
+  allOpts.forEach(b => {
+    b.disabled = true;
+    const i = parseInt(b.dataset.i);
+    if (i === correctIdx) {
+      b.classList.add("correct");
+      b.querySelector(".opt-icon").textContent = "✓";
+    } else if (i === choiceIdx && i !== correctIdx) {
+      b.classList.add("wrong");
+      b.querySelector(".opt-icon").textContent = "✕";
     }
   });
 
-  /* Arrondi propre */
-  const finalScore = Math.round(score);
-  showModal(finalScore);
-  document.getElementById('btn-validate').disabled = true;
+  const isCorrect   = choiceIdx === correctIdx;
+  results[qIdx]     = isCorrect;
+
+  const fb = document.getElementById("fb");
+  fb.className = `feedback show ${isCorrect ? "ok" : "ko"}`;
+  fb.innerHTML = isCorrect
+    ? `<p class="feedback-title">Bonne réponse ! 🎉</p>`
+    : `<p class="feedback-title">Pas tout à fait.</p>
+       <p>La bonne réponse était : <strong>${q.answer}</strong></p>`;
+
+  renderMath(fb);
+  document.getElementById("btn-next").disabled = false;
+  updateProgress(results.filter(r => r !== null).length);
 }
 
-/* ── Modal ── */
-function showModal(score) {
-  const ratio = total > 0 ? score / total : 0;
-  const lvl = MESSAGES.find(m => ratio >= m.min) || MESSAGES[MESSAGES.length - 1];
-
-  document.getElementById('modal-icon').innerHTML = lvl.icon;
-  document.getElementById('modal-icon').className = `modal-icon ${lvl.cls}`;
-  document.getElementById('modal-title').textContent = lvl.title;
-  document.getElementById('modal-score').textContent = score;
-  document.getElementById('modal-total').textContent = `/ ${total} questions`;
-  document.getElementById('modal-message').textContent = lvl.msg;
-
-  document.getElementById('overlay').classList.add('visible');
+/* ── NAVIGATION ──────────────────────────────────────────────────── */
+function goNext(fromIdx) {
+  if (fromIdx + 1 < questions.length) {
+    cursor = fromIdx + 1;
+    renderCard(cursor);
+  } else {
+    showScore();
+  }
 }
 
-/* ── Navigation ── */
-function retourModule() {
-  document.getElementById('overlay').classList.remove('visible');
-  /* Compatibilité avec module.html — adapter selon votre intégration */
-  const qcmContainer = document.getElementById('qcm-container');
-  if (qcmContainer) qcmContainer.style.display = 'none';
-  const descCard = document.querySelector('.desc-card');
-  const trainContainer = document.querySelector('.train-container');
-  const progressSection = document.querySelector('.module-progress-section');
-  const historyGrid = document.querySelector('.history-grid');
-  if (descCard) descCard.style.display = 'block';
-  if (trainContainer) trainContainer.style.display = 'flex';
-  if (progressSection) progressSection.style.display = 'block';
-  if (historyGrid) historyGrid.style.display = 'grid';
-  /* Si page standalone, on revient simplement en arrière */
-  if (!qcmContainer) window.history.back();
+function goBack() {
+  window.location.href = document.getElementById("back-btn").href;
 }
 
-/* ── Utils ── */
-function escHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ── PROGRESS ────────────────────────────────────────────────────── */
+function updateProgress(done) {
+  const total = questions.length || DEFAULTS.n;
+  const pct   = Math.round((done / total) * 100);
+  document.getElementById("prog-fill").style.width    = pct + "%";
+  document.getElementById("prog-pct").textContent     = pct + "%";
+  document.getElementById("prog-label").textContent   = `Question ${Math.min(done + 1, total)} / ${total}`;
+  document.getElementById("prog-questions").textContent = done + " répondue(s)";
 }
+
+/* ── SCORE ───────────────────────────────────────────────────────── */
+function showScore() {
+  $qSlot.innerHTML = "";
+
+  const total   = results.length;
+  const correct = results.filter(r => r === true).length;
+  const wrong   = results.filter(r => r === false).length;
+  const pct     = Math.round((correct / total) * 100);
+
+  document.getElementById("prog-fill").style.width     = "100%";
+  document.getElementById("prog-pct").textContent      = "100%";
+  document.getElementById("prog-label").textContent    = "Terminé !";
+  document.getElementById("prog-questions").textContent = total + " répondue(s)";
+
+  document.getElementById("score-num").innerHTML =
+    `${pct}<sup>%</sup>`;
+  document.getElementById("score-caption").textContent =
+    pct >= 80 ? "Excellent ! Vous maîtrisez le sujet. 🏆" :
+    pct >= 60 ? "Très bien ! Continuez sur cette lancée." :
+    pct >= 40 ? "Bon effort. Quelques points à consolider." :
+                "Pas de panique, la pratique paie ! 💪";
+
+  document.getElementById("stat-ok").textContent  = correct;
+  document.getElementById("stat-ko").textContent  = wrong;
+  document.getElementById("stat-tot").textContent = total;
+
+  $score.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ── TOAST ───────────────────────────────────────────────────────── */
+function showToast(msg, isError = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className   = "toast show" + (isError ? " error" : "");
+  setTimeout(() => { t.className = "toast"; }, 3500);
+}
+
+/* ── HELPERS ─────────────────────────────────────────────────────── */
+function show(el) { el.style.display = ""; }
+function hide(el) { el.style.display = "none"; }
+
+/* ── INIT ────────────────────────────────────────────────────────── */
+startSession();
 </script>
 </body>
 </html>
