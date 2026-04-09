@@ -1,11 +1,52 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!-- qcm.html - Version fragment -->
 <div id="qcm-page">
     <button class="qcm_button" onclick="retourAccueil()">Retour</button>
+=======
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices</title>
+<style>
+  :root {
+    --color-bg: #f8f7f4;
+    --color-surface: #ffffff;
+    --color-border: rgba(0,0,0,0.12);
+    --color-border-strong: rgba(0,0,0,0.22);
+    --color-text-primary: #1a1a18;
+    --color-text-secondary: #5f5e5a;
+    --color-text-muted: #888780;
+    --color-purple-50: #EEEDFE;
+    --color-purple-100: #CECBF6;
+    --color-purple-600: #534AB7;
+    --color-purple-800: #3C3489;
+    --color-teal-50: #E1F5EE;
+    --color-teal-100: #9FE1CB;
+    --color-teal-600: #0F6E56;
+    --color-teal-800: #085041;
+    --color-coral-50: #FAECE7;
+    --color-coral-100: #F5C4B3;
+    --color-coral-600: #993C1D;
+    --color-amber-50: #FAEEDA;
+    --color-amber-100: #FAC775;
+    --color-amber-600: #854F0B;
+    --color-green-50: #EAF3DE;
+    --color-green-600: #3B6D11;
+    --color-red-50: #FCEBEB;
+    --color-red-600: #A32D2D;
+    --color-blue-50: #E6F1FB;
+    --color-blue-600: #185FA5;
+    --color-blue-800: #0C447C;
+  }
+>>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
 
-    <h1>QCM Dynamique</h1>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
+<<<<<<< HEAD
 =======
 <div id="qcm-page">
     <!-- Bouton Retour -->
@@ -29,19 +70,522 @@
         {% endfor %}
         <button class="qcm_button" type="button" onclick="checkAnswers()">Valider</button>
 <<<<<<< HEAD
+=======
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+>>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
 
-    </form>
+  /* ── Header ── */
+  .page-header {
+    background: var(--color-surface);
+    border-bottom: 0.5px solid var(--color-border);
+    padding: 0.875rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 
-    <div id="result"></div>
+  .btn-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 0.5px solid var(--color-border-strong);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-back:hover { background: var(--color-bg); }
+  .btn-back svg { width: 14px; height: 14px; }
+
+  .header-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  /* ── Score bar ── */
+  .score-bar {
+    background: var(--color-surface);
+    border-bottom: 0.5px solid var(--color-border);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .score-label {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--color-bg);
+    border-radius: 99px;
+    border: 0.5px solid var(--color-border);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-purple-600);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .score-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    min-width: 48px;
+    text-align: right;
+  }
+
+  /* ── Main layout ── */
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* ── Question card ── */
+  .q-card {
+    background: var(--color-surface);
+    border: 0.5px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.125rem 1.25rem 0.875rem;
+    border-bottom: 0.5px solid var(--color-border);
+  }
+
+  .q-badge {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 99px;
+    border: 0.5px solid;
+  }
+
+  .q-badge.type-qcm {
+    background: var(--color-purple-50);
+    color: var(--color-purple-800);
+    border-color: var(--color-purple-100);
+  }
+  .q-badge.type-qro {
+    background: var(--color-teal-50);
+    color: var(--color-teal-800);
+    border-color: var(--color-teal-100);
+  }
+  .q-badge.type-sbs {
+    background: var(--color-amber-50);
+    color: var(--color-amber-600);
+    border-color: var(--color-amber-100);
+  }
+
+  .q-num {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .q-body { padding: 1rem 1.25rem 1.25rem; }
+
+  /* ── QCM options ── */
+  .options-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 0.5px solid var(--color-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    line-height: 1.4;
+  }
+
+  .option-label:hover { background: var(--color-bg); border-color: var(--color-border-strong); }
+
+  .option-label input[type="radio"] { display: none; }
+
+  .option-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border-strong);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s, border-color 0.12s;
+  }
+
+  .option-label.selected .option-dot {
+    background: var(--color-purple-600);
+    border-color: var(--color-purple-600);
+  }
+
+  .option-label.selected .option-dot::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .option-label.selected {
+    background: var(--color-purple-50);
+    border-color: var(--color-purple-100);
+  }
+
+  /* Feedback après validation */
+  .option-label.correct {
+    background: var(--color-green-50);
+    border-color: #C0DD97;
+  }
+  .option-label.correct .option-dot {
+    background: var(--color-green-600);
+    border-color: var(--color-green-600);
+  }
+  .option-label.incorrect {
+    background: var(--color-red-50);
+    border-color: #F7C1C1;
+  }
+  .option-label.incorrect .option-dot {
+    background: var(--color-red-600);
+    border-color: var(--color-red-600);
+  }
+
+  /* ── QRO textarea ── */
+  .qro-field {
+    width: 100%;
+    border: 0.5px solid var(--color-border-strong);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .qro-field:focus { border-color: var(--color-purple-600); }
+
+  .qro-hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 6px;
+  }
+
+  .qro-correction {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--color-teal-50);
+    border: 0.5px solid var(--color-teal-100);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-teal-800);
+    line-height: 1.5;
+  }
+
+  .qro-correction strong {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-teal-600);
+    margin-bottom: 4px;
+  }
+
+  /* ── SBS steps ── */
+  .sbs-intro {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: var(--color-amber-50);
+    border-radius: 8px;
+    border: 0.5px solid var(--color-amber-100);
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 0.5px solid var(--color-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+  }
+
+  .step-field {
+    flex: 1;
+    border: 0.5px solid var(--color-border-strong);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    resize: none;
+    min-height: 60px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .step-field:focus { border-color: var(--color-amber-600); }
+
+  .step-label {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  /* ── Barre de validation ── */
+  .validate-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--color-surface);
+    border-top: 0.5px solid var(--color-border);
+    padding: 0.875rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .validate-info {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
+  .btn-validate {
+    background: var(--color-purple-600);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-validate:hover { background: var(--color-purple-800); }
+  .btn-validate:active { transform: scale(0.98); }
+  .btn-validate:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* ── Overlay modal ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .overlay.visible { display: flex; }
+
+  .modal {
+    background: var(--color-surface);
+    border-radius: 16px;
+    border: 0.5px solid var(--color-border);
+    padding: 2rem 1.75rem 1.75rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .modal-icon.great { background: var(--color-teal-50); }
+  .modal-icon.good  { background: var(--color-purple-50); }
+  .modal-icon.ok    { background: var(--color-amber-50); }
+  .modal-icon.poor  { background: var(--color-red-50); }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .modal-score {
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--color-purple-600);
+    margin: 0.5rem 0 0.25rem;
+    line-height: 1;
+  }
+
+  .modal-total {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-message {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .btn-finish {
+    width: 100%;
+    background: var(--color-purple-600);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 0;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-finish:hover { background: var(--color-purple-800); }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="page-header">
+  <button class="btn-back" onclick="retourModule()">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M10 12L6 8l4-4"/>
+    </svg>
+    Retour
+  </button>
+  <span class="header-title" id="header-title">Exercices</span>
+  <span style="width:72px"></span>
+</header>
+
+<!-- ── Score bar ── -->
+<div class="score-bar">
+  <span class="score-label">Progression</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <span class="score-count" id="score-display">0 / 0</span>
+</div>
+
+<!-- ── Questions ── -->
+<main class="main" id="questions-container"></main>
+
+<!-- ── Bouton Valider ── -->
+<div class="validate-bar">
+  <span class="validate-info" id="validate-info">Répondez à toutes les questions</span>
+  <button class="btn-validate" id="btn-validate" onclick="validateAll()">Valider</button>
+</div>
+
+<!-- ── Modal score ── -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-icon" id="modal-icon"></div>
+    <p class="modal-title" id="modal-title">Exercice terminé !</p>
+    <div class="modal-score" id="modal-score">0</div>
+    <div class="modal-total" id="modal-total">/ 0 questions</div>
+    <p class="modal-message" id="modal-message"></p>
+    <button class="btn-finish" onclick="retourModule()">Terminer</button>
+  </div>
 </div>
 
 <script>
-    const answers = JSON.parse('{{ questions|tojson|safe }}');
+/* ════════════════════════════════════════════════
+   DATA  — injectée par Jinja2
+   ════════════════════════════════════════════════ */
+const QUESTIONS = JSON.parse('{{ questions | tojson | safe }}');
+/* Chaque question a un champ "type" : "qcm" | "qro" | "sbs"
+   Structure QCM  : { type, question, options: [], answer: str }
+   Structure QRO  : { type, question, answer: str }
+   Structure SBS  : { type, question, steps: [{ label, answer }] }
+*/
 
-    function checkAnswers() {
-        let score = 0;
-        const total = answers.length;
+/* ── Config libellés ── */
+const TYPE_LABELS = {
+  qcm: 'Choix multiple',
+  qro: 'Réponse ouverte',
+  sbs: 'Étape par étape',
+};
 
+<<<<<<< HEAD
 =======
     </form>
  
@@ -66,11 +610,203 @@
             }
         });
 <<<<<<< HEAD
+=======
+const MESSAGES = [
+  { min: 0.9,  icon: '🎉', cls: 'great', title: 'Excellent !',     msg: 'Maîtrise parfaite. Continue comme ça !' },
+  { min: 0.7,  icon: '👍', cls: 'good',  title: 'Bien joué !',     msg: 'Bon travail, encore quelques points à consolider.' },
+  { min: 0.5,  icon: '💡', cls: 'ok',    title: 'Pas mal !',       msg: 'La moitié est acquise. Revoyez les erreurs.' },
+  { min: 0,    icon: '📚', cls: 'poor',  title: 'À retravailler',  msg: 'Ne vous découragez pas, relisez le module.' },
+];
+>>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
 
-        document.getElementById("result").innerHTML = `Score : ${score} / ${total}`;
+/* ── Rendu ── */
+const container = document.getElementById('questions-container');
+const total = QUESTIONS.length;
+let answered = 0;
+let validated = false;
+
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `card-${i}`;
+  card.innerHTML = buildCard(q, i);
+  container.appendChild(card);
+  attachListeners(card, q, i);
+});
+
+document.getElementById('header-title').textContent =
+  `{{ notion | default("Exercices") | capitalize }} — {{ niveau | default("") }}`;
+updateScoreBar();
+
+/* ── Build card HTML ── */
+function buildCard(q, i) {
+  const type = q.type || 'qcm';
+  return `
+    <div class="q-header">
+      <span class="q-badge type-${type}">${TYPE_LABELS[type] || type}</span>
+      <span class="q-num">Question ${i + 1} / ${total}</span>
+    </div>
+    <div class="q-body">
+      <p class="q-text" style="margin-bottom:1rem;">${escHtml(q.question)}</p>
+      ${buildBody(q, i)}
+    </div>`;
+}
+
+function buildBody(q, i) {
+  const type = q.type || 'qcm';
+
+  if (type === 'qcm') {
+    const items = (q.options || []).map((opt, j) => `
+      <li>
+        <label class="option-label" id="opt-${i}-${j}">
+          <input type="radio" name="q${i}" value="${j}" onchange="onRadioChange(${i})">
+          <span class="option-dot"></span>
+          ${escHtml(opt)}
+        </label>
+      </li>`).join('');
+    return `<ul class="options-list">${items}</ul>`;
+  }
+
+  if (type === 'qro') {
+    return `
+      <textarea class="qro-field" id="qro-${i}" placeholder="Rédigez votre réponse…"
+        oninput="onTextChange(${i})"></textarea>
+      <p class="qro-hint">Exprimez votre raisonnement librement.</p>
+      <div class="qro-correction" id="qro-correction-${i}">
+        <strong>Réponse attendue</strong>
+        <span id="qro-answer-${i}"></span>
+      </div>`;
+  }
+
+  if (type === 'sbs') {
+    const steps = (q.steps || []).map((s, j) => `
+      <div class="step-item">
+        <div class="step-num">${j + 1}</div>
+        <div style="flex:1">
+          <p class="step-label">${escHtml(s.label || `Étape ${j+1}`)}</p>
+          <textarea class="step-field" id="sbs-${i}-${j}"
+            placeholder="Votre réponse pour cette étape…"
+            oninput="onTextChange(${i})"></textarea>
+        </div>
+      </div>`).join('');
+    return `
+      <p class="sbs-intro">Remplissez chaque étape de la résolution dans l'ordre.</p>
+      <div class="steps-list">${steps}</div>
+      <div class="qro-correction" id="qro-correction-${i}">
+        <strong>Correction détaillée</strong>
+        <span id="qro-answer-${i}"></span>
+      </div>`;
+  }
+
+  return '';
+}
+
+/* ── Listeners ── */
+function attachListeners(card, q, i) {}
+
+function onRadioChange(i) {
+  if (validated) return;
+  const q = QUESTIONS[i];
+  const selected = document.querySelector(`input[name="q${i}"]:checked`);
+  markAnswered(i, !!selected);
+}
+
+function onTextChange(i) {
+  if (validated) return;
+  const q = QUESTIONS[i];
+  const type = q.type || 'qcm';
+  let hasContent = false;
+  if (type === 'qro') {
+    const ta = document.getElementById(`qro-${i}`);
+    hasContent = ta && ta.value.trim().length > 0;
+  } else if (type === 'sbs') {
+    const steps = q.steps || [];
+    hasContent = steps.every((_, j) => {
+      const f = document.getElementById(`sbs-${i}-${j}`);
+      return f && f.value.trim().length > 0;
+    });
+  }
+  markAnswered(i, hasContent);
+}
+
+const answeredSet = new Set();
+function markAnswered(i, state) {
+  if (state) answeredSet.add(i);
+  else answeredSet.delete(i);
+  updateScoreBar();
+}
+
+/* ── Score bar ── */
+function updateScoreBar() {
+  const n = answeredSet.size;
+  document.getElementById('score-display').textContent = `${n} / ${total}`;
+  document.getElementById('progress-fill').style.width = total > 0 ? `${(n/total)*100}%` : '0%';
+  document.getElementById('validate-info').textContent =
+    n === total ? 'Toutes les questions sont remplies !' : `${total - n} question(s) sans réponse`;
+}
+
+/* ── Validation ── */
+function validateAll() {
+  if (validated) return;
+  validated = true;
+
+  let score = 0;
+
+  QUESTIONS.forEach((q, i) => {
+    const type = q.type || 'qcm';
+
+    if (type === 'qcm') {
+      const sel = document.querySelector(`input[name="q${i}"]:checked`);
+      const correctIdx = q.options ? q.options.indexOf(q.answer) : -1;
+      q.options && q.options.forEach((_, j) => {
+        const lbl = document.getElementById(`opt-${i}-${j}`);
+        if (!lbl) return;
+        lbl.style.pointerEvents = 'none';
+        if (j === correctIdx) lbl.classList.add('correct');
+        if (sel && parseInt(sel.value) === j && j !== correctIdx) lbl.classList.add('incorrect');
+      });
+      if (sel && q.options && q.options[parseInt(sel.value)] === q.answer) score++;
+
+    } else if (type === 'qro') {
+      /* QRO : afficher la réponse attendue */
+      const corr = document.getElementById(`qro-correction-${i}`);
+      const ans  = document.getElementById(`qro-answer-${i}`);
+      if (corr) corr.style.display = 'block';
+      if (ans)  ans.textContent = q.answer || '—';
+      const ta = document.getElementById(`qro-${i}`);
+      if (ta) ta.disabled = true;
+      /* Comptabilisé si l'étudiant a répondu quelque chose */
+      if (ta && ta.value.trim().length > 0) score += 0.5; // partiel
+
+    } else if (type === 'sbs') {
+      const corr = document.getElementById(`qro-correction-${i}`);
+      const ans  = document.getElementById(`qro-answer-${i}`);
+      if (corr) corr.style.display = 'block';
+      if (ans) {
+        const steps = q.steps || [];
+        ans.innerHTML = steps.map((s, j) =>
+          `<div style="margin-top:6px"><em>${escHtml(s.label || `Étape ${j+1}`)}</em> : ${escHtml(s.answer || '—')}</div>`
+        ).join('');
+      }
+      (q.steps || []).forEach((_, j) => {
+        const f = document.getElementById(`sbs-${i}-${j}`);
+        if (f) f.disabled = true;
+      });
+      const allFilled = (q.steps || []).every((_, j) => {
+        const f = document.getElementById(`sbs-${i}-${j}`);
+        return f && f.value.trim().length > 0;
+      });
+      if (allFilled) score += 0.5;
     }
+  });
 
+  /* Arrondi propre */
+  const finalScore = Math.round(score);
+  showModal(finalScore);
+  document.getElementById('btn-validate').disabled = true;
+}
 
+<<<<<<< HEAD
 =======
  
         document.getElementById("result").innerHTML = `Score : ${score} / ${total}`;
@@ -828,6 +1564,8 @@ function validateAll() {
   document.getElementById('btn-validate').disabled = true;
 }
 
+=======
+>>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
 /* ── Modal ── */
 function showModal(score) {
   const ratio = total > 0 ? score / total : 0;
@@ -868,5 +1606,9 @@ function escHtml(str) {
 }
 </script>
 </body>
+<<<<<<< HEAD
 </html>
 >>>>>>> e6d8157 ([COMPLETION] Add og an exercise page when "M'entrainer" button is clicked on (exercise generation not working yet))
+=======
+</html>
+>>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
