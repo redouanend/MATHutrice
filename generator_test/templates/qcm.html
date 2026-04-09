@@ -1,0 +1,54 @@
+<div id="qcm-page">
+    <!-- Bouton Retour -->
+    <button onclick="retourModule()">Retour au module</button>
+ 
+    <h1>QCM Dynamique</h1>
+ 
+    <form id="qcm-form">
+        {% for q in questions %}
+        {% set question_index = loop.index0 %}
+        <div class="question">
+            <h3>{{ loop.index }}. {{ q.question }}</h3>
+            {% for option in q.options %}
+            <label>
+                <input type="radio" name="question{{ question_index }}" value="{{ loop.index0 }}">
+                {{ option }}
+            </label><br>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button class="qcm_button" type="button" onclick="checkAnswers()">Valider</button>
+    </form>
+ 
+    <div id="result"></div>
+</div>
+ 
+<script>
+    const answers = JSON.parse('{{ questions|tojson|safe }}');
+ 
+    function checkAnswers() {
+        let score = 0;
+        const total = answers.length;
+ 
+        answers.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="question${index}"]:checked`);
+            if (selected) {
+                const selectedOption = q.options[selected.value];
+                if (selectedOption === q.answer) {
+                    score++;
+                }
+            }
+        });
+ 
+        document.getElementById("result").innerHTML = `Score : ${score} / ${total}`;
+    }
+
+    // Fonction pour revenir à la page module
+    function retourModule() {
+        document.getElementById('qcm-container').style.display = 'none';
+        document.querySelector('.desc-card').style.display = 'block';
+        document.querySelector('.train-container').style.display = 'flex';
+        document.querySelector('.module-progress-section').style.display = 'block';
+        document.querySelector('.history-grid').style.display = 'grid';
+    }
+</script>
