@@ -7,7 +7,8 @@ MODEL = "mistral-small"
 
 client = Mistral(api_key=API_KEY)
 
-#Prompt to send to mistral
+
+# Prompt to send to mistral
 def build_prompt(notion: str, niveau: str) -> str:
 
     prompt = f"""
@@ -46,7 +47,7 @@ Contraintes :
     return prompt
 
 
-#Send the prompt to mistral
+# Send the prompt to mistral
 def call_mistral(prompt: str) -> str:
 
     response = client.chat.complete(
@@ -57,9 +58,8 @@ def call_mistral(prompt: str) -> str:
     return response.choices[0].message.content
 
 
-#To get a dictionnary from what the prompt sent in JSON format
+# To get a dictionnary from what the prompt sent in JSON format
 def clean_json_response(text: str) -> dict:
-
 
     text = re.sub(r"```json|```", "", text).strip()
 
@@ -68,9 +68,9 @@ def clean_json_response(text: str) -> dict:
     except json.JSONDecodeError:
         raise ValueError("Réponse du modèle non JSON valide")
 
-#To verify we have a statement and options wich include the answer
-def validate_qcm(data: dict) -> dict:
 
+# To verify we have a statement and options wich include the answer
+def validate_qcm(data: dict) -> dict:
 
     question = data.get("question", "").strip()
     options = data.get("options", [])
@@ -85,16 +85,11 @@ def validate_qcm(data: dict) -> dict:
     if answer not in options:
         raise ValueError("La bonne réponse doit être dans options")
 
-    return {
-        "question": question,
-        "options": options,
-        "answer": answer
-    }
+    return {"question": question, "options": options, "answer": answer}
 
 
 # To show the statement in a clear way
 def build_statement(qcm: dict) -> str:
-
 
     question = qcm["question"]
     options = qcm["options"]
@@ -107,7 +102,7 @@ def build_statement(qcm: dict) -> str:
     return statement
 
 
-#"main" function of the file, it will be called in app.py
+# "main" function of the file, it will be called in app.py
 def generate_qcm_statement(notion: str, niveau: str) -> str:
 
     prompt = build_prompt(notion, niveau)
@@ -123,10 +118,8 @@ def generate_qcm_statement(notion: str, niveau: str) -> str:
     return statement
 
 
-
-#To test
+# To test
 if __name__ == "__main__":
-
     notion = "trigonométrie"
     niveau = "intermédiaire"
     print("cam")

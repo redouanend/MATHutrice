@@ -48,7 +48,6 @@ class Data(BaseModel):
 async def get_notion(request: Request, data: Data):
     qcm_data = generate_qcm_statement(data.notion, niveau="Intermédiaire")
     print(qcm_data)
-    exit()
     return templates.TemplateResponse(
         "qcm.html", {"request": request, "questions": qcm_data}
     )
