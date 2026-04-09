@@ -2,27 +2,46 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import uvicorn
 from pydantic import BaseModel
 from test_format_generator.QCM import generate_qcm_statement
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="generator_test/static"), name="static")
+# ── Chemin absolu pour éviter les problèmes de chemins ──
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-templates = Jinja2Templates(directory="generator_test/templates")
+# Static
+app.mount(
+    "/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static"
+)
+
+# Templates (on peut tous les regrouper dans un seul dossier si possible)
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 
-@app.get("/", include_in_schema=True)
-async def page_home(request: Request):
-    return templates.TemplateResponse(request, "index.html")
+# ── PAGE 1 : home.html
+@app.get("/", response_class=HTMLResponse)
+async def home_page(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 
+# ── PAGE 2 : module.html
+@app.get("/module.html", response_class=HTMLResponse)
+async def module_page(request: Request):
+    return templates.TemplateResponse("module.html", {"request": request})
+
+
+# ── PAGE 3 : index.html
+@app.get("/index", response_class=HTMLResponse)
+async def index_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+# ── API
 class Data(BaseModel):
     notion: str
 
 
-# Récupération de la requête contenant le nom de la notion (envoyer par le frontend)
 @app.post("/generate_exo", include_in_schema=True)
 async def get_notion(request: Request, data: Data):
     qcm_data = generate_qcm_statement(data.notion, niveau="légendaire")
@@ -32,4 +51,5 @@ async def get_notion(request: Request, data: Data):
     )
 
 
-uvicorn.run(app, host="localhost", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8000)
