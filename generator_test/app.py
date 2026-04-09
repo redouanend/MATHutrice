@@ -3,16 +3,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import uvicorn
 import os
->>>>>>> 846045f (Interconnexion between the different hmtl pages and the QCM generator)
-=======
-import uvicorn
-import os
->>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
 from test_format_generator.QCM import generate_qcm_statement
 # from generator_test.fonctions python.test_entrainement import generate_mixed_test
 
@@ -73,22 +65,8 @@ class Data(BaseModel):
 async def get_notion(request: Request, data: Data):
     qcm_data = generate_qcm_statement(data.notion, niveau="Intermédiaire")
     print(qcm_data)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return templates.TemplateResponse(
-        "qcm.html", {"request": request, "questions": [qcm_data]}
-=======
-    exit()
-=======
->>>>>>> 79ee4ca ([BUG FIX] Fixing the exercises display)
     return templates.TemplateResponse(
         "qcm.html", {"request": request, "questions": qcm_data}
->>>>>>> 846045f (Interconnexion between the different hmtl pages and the QCM generator)
-=======
-    return templates.TemplateResponse(
-        "qcm.html", {"request": request, "questions": qcm_data}
->>>>>>> 1a80e558f4b19f178389510fe587b66c3bb8b463
     )
 
 
