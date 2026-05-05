@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 import os
-from test_format_generator.QCM import generate_qcm_statement
+from generator_test.test_format_generator.QCM import generate_qcm_statement
 # from generator_test.fonctions_python.test_entrainement import generate_mixed_test
 
 
