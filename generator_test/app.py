@@ -139,4 +139,4 @@ async def generate_qcm_endpoint(data: QCMRequest):
 # ── Lancement ─────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app)
