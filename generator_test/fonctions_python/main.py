@@ -23,14 +23,14 @@ from type_questions.steps_generator import generate_steps_test, run_test as run_
 
 # ─── NOTIONS DISPONIBLES ──────────────────────────────────────────────────────
 
-NOTIONS = [
-    "trigonométrie",
-    "fractions",
-    "dérivées",
-    "nombres complexes",
-]
+# NOTIONS = [
+#     "trigonométrie",
+#     "fractions",
+#     "dérivées",
+#     "nombres complexes",
+# ]
 
-NIVEAUX = ["débutant", "intermédiaire", "avancé"]
+# NIVEAUX = ["débutant", "intermédiaire", "avancé"]
 
 FORMATS = {
     "qcm": (generate_qcm_test, run_qcm),
