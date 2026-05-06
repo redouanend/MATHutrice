@@ -34,21 +34,26 @@ QCM_FORMAT = """
 """
 
 
-def build_prompt(notion: str, niveau: str) -> str:
+def build_prompt(notion_nom: str, competence: dict) -> str:
     return f"""
 Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 Ta tâche est de générer UNE question QCM de mathématiques.
 
 Informations :
-- Notion : {notion}
-- Niveau : {niveau}
+- Notion : {notion_nom}
+- Code compétence : {competence["code"]}
+- Compétence ciblée : {competence["nom"]}
+- Niveau : {competence["niveau"]}
+- Score actuel : {competence["score"]}
 
 Contraintes pédagogiques :
-- La question doit être adaptée au niveau demandé.
+- La question doit évaluer principalement la compétence ciblée.
+- La question doit être adaptée au niveau de la compétence.
 - L'énoncé doit être clair et sans ambiguïté.
 - Les calculs doivent être mathématiquement corrects.
 - Une seule réponse parmi les options est correcte.
-- Les 3 mauvaises réponses doivent être plausibles (pas absurdes).
+- Les 3 mauvaises réponses doivent être plausibles et liées à des erreurs fréquentes.
+- Évite les questions trop générales : l'exercice doit permettre de vérifier si la compétence est maîtrisée.
 
 Règles de sortie — TRÈS IMPORTANT :
 - Réponds UNIQUEMENT avec un JSON valide, rien d'autre.

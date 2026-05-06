@@ -183,3 +183,83 @@ def print_question_header(index: int, total: int, extra: str = "") -> None:
     #     label += f"  [{extra}]"
     # print(label)
     # print(f"{'─' * 50}")
+
+import random
+
+
+def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
+    """
+    Choisit une ou plusieurs compétences à travailler selon :
+    - la notion étudiée
+    - le type d'exercice : qcm, qro ou sbs
+    - le niveau actuel de l'élève : basique, solide ou expert
+    """
+
+    # Ordre des niveaux pour savoir quel est le niveau supérieur
+    ordre_niveaux = ["basique", "solide", "expert"]
+
+    # Vérification du type d'exercice
+    if type_exercice not in ["qcm", "qro", "sbs"]:
+        raise ValueError("type_exercice doit être 'qcm', 'qro' ou 'sbs'.")
+
+    # Vérification du niveau de l'élève
+    if niveau_eleve not in ordre_niveaux:
+        raise ValueError("niveau_eleve doit être 'basique', 'solide' ou 'expert'.")
+
+    # Récupération de toutes les compétences de la notion
+    competences = notion["competences"]
+
+    # On garde seulement les compétences du niveau actuel de l'élève
+    competences_niveau = [
+        c for c in competences
+        if c["niveau"] == niveau_eleve
+    ]
+
+    # Si aucune compétence ne correspond au niveau demandé
+    if not competences_niveau:
+        return [] if type_exercice == "sbs" else None
+
+    # Nombre de compétences du niveau actuel considérées comme maîtrisées
+    # Une compétence est maîtrisée si son score est strictement supérieur à 0.8
+    nb_acquises = sum(
+        1 for c in competences_niveau
+        if c["score"] > 0.8
+    )
+
+    # Proportion de compétences maîtrisées dans le niveau actuel
+    proportion_acquises = nb_acquises / len(competences_niveau)
+
+    # Position du niveau actuel dans la liste des niveaux
+    niveau_index = ordre_niveaux.index(niveau_eleve)
+
+    # Si plus de 70 % des compétences du niveau actuel sont maîtrisées,
+    # on autorise aussi les compétences du niveau supérieur
+    if proportion_acquises > 0.7:
+        niveaux_autorises = [niveau_eleve]
+
+        # Ajout du niveau supérieur s'il existe
+        if niveau_index + 1 < len(ordre_niveaux):
+            niveaux_autorises.append(ordre_niveaux[niveau_index + 1])
+
+        # On sélectionne les compétences non maîtrisées
+        # dans le niveau actuel + le niveau supérieur
+        competences_candidates = [
+            c for c in competences
+            if c["niveau"] in niveaux_autorises and c["score"] < 0.8
+        ]
+
+    else:
+        # Si l'élève ne maîtrise pas encore assez son niveau,
+        # on reste uniquement sur les compétences de son niveau actuel
+        competences_candidates = [
+            c for c in competences
+            if c["niveau"] == niveau_eleve and c["score"] < 0.8
+        ]
+
+    # Pour un QCM ou une QRO, on renvoie une seule compétence au hasard
+    if type_exercice in ["qcm", "qro"]:
+        return random.choice(competences_candidates) if competences_candidates else None
+
+    # Pour SBS, on renvoie toute la liste des compétences candidates
+    if type_exercice == "sbs":
+        return competences_candidates

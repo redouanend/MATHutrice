@@ -52,46 +52,57 @@ STEPS_FORMAT = """
     "Réponse attendue à l'étape 1",
     "Réponse attendue à l'étape 2",
     "Réponse attendue à l'étape n"
+  ],
+  "competences_associees": [
+    "tr01",
+    "tr04",
+    "tr16"
   ]
 }
 """
 
-
-def build_prompt(notion: str, niveau: str) -> str:
+def build_prompt(notion_nom: str, competences: list) -> str:
     return f"""
 Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 Ta tâche est de générer UN exercice de mathématiques décomposé en étapes.
 
 Informations :
-- Notion : {notion}
-- Niveau : {niveau}
+- Notion : {notion_nom}
+- Compétences ciblées : {competences}
 
 Contraintes pédagogiques :
+- L'exercice doit regrouper plusieurs compétences qui fonctionnent bien ensemble.
+- Chaque étape doit évaluer principalement UNE compétence de la liste fournie.
+- Chaque compétence utilisée doit correspondre à une étape de résolution.
 - L'énoncé doit présenter un problème complet à résoudre.
 - Décompose la résolution en étapes dans l'ordre logique exact.
 - Chaque étape doit être une sous-question précise et indépendante.
-- Les étapes doivent être suffisamment détaillées pour identifier exactement
-  où un étudiant fait une erreur (entre 3 et 6 étapes selon la complexité).
-- Chaque correct_answer doit être la réponse attendue à cette étape précise.
+- Les étapes doivent permettre d'identifier exactement où l'étudiant fait une erreur.
+- Il doit y avoir entre 3 et 6 étapes.
+- Chaque correct_answer doit être la réponse attendue à l'étape correspondante.
 - Les calculs doivent être mathématiquement corrects.
+- N'utilise pas forcément toutes les compétences si la liste est trop longue.
+- Choisis les compétences les plus cohérentes entre elles pour construire un exercice progressif.
 
-Exemples de bonnes étapes :
-  Problème : Calculer la dérivée de f(x) = x² · sin(x)
-  Étape 1 : "Quelle règle de dérivation faut-il utiliser ici ?"  → "La règle du produit : (uv)' = u'v + uv'"
-  Étape 2 : "Que vaut u' si u = x² ?"                           → "u' = 2x"
-  Étape 3 : "Que vaut v' si v = sin(x) ?"                       → "v' = cos(x)"
-  Étape 4 : "Donne l'expression finale de f'(x)"                → "f'(x) = 2x·sin(x) + x²·cos(x)"
+Exemple de logique attendue :
+Si les compétences ciblées sont :
+- Développer une expression
+- Factoriser une expression
+- Résoudre une équation-produit
+
+Alors l'exercice peut demander de résoudre une équation en commençant par développer,
+puis factoriser, puis utiliser la propriété du produit nul.
 
 Règles de sortie — TRÈS IMPORTANT :
 - Réponds UNIQUEMENT avec un JSON valide, rien d'autre.
 - Pas de texte avant ou après le JSON.
 - Pas de markdown, pas de balises ```json.
 - "questions" et "correct_answers" doivent avoir exactement la même longueur.
+- Chaque étape doit indiquer le code de la compétence travaillée.
 
 Format attendu :
 {STEPS_FORMAT}
 """
-
 
 # ─── PARSING & VALIDATION ─────────────────────────────────────────────────────
 

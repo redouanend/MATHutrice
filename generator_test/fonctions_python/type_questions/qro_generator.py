@@ -34,24 +34,25 @@ QRO_FORMAT = """
 }
 """
 
-
-def build_prompt(notion: str, niveau: str) -> str:
+def build_prompt(notion_nom: str, competence: dict) -> str:
     return f"""
 Tu es un tuteur de mathématiques pour des étudiants de première année d'université.
 Ta tâche est de générer UNE question à réponse ouverte (QRO) de mathématiques.
 
 Informations :
-- Notion : {notion}
-- Niveau : {niveau}
+- Notion : {notion_nom}
+- Code compétence : {competence["code"]}
+- Compétence ciblée : {competence["nom"]}
+- Niveau : {competence["niveau"]}
+- Score actuel : {competence["score"]}
 
 Contraintes pédagogiques :
-- La question doit appeler une réponse courte et précise (pas un développement long).
-- Exemples de bonnes questions QRO :
-    "Quelle est la dérivée de f(x) = 3x² ?"  → "6x"
-    "Donne la forme algébrique de z = 2(cos(π/3) + i·sin(π/3))"  → "1 + i√3"
-    "Simplifie la fraction 12/18"  → "2/3"
-- La correct_answer doit être concise : un résultat, une formule, une expression.
+- La question doit évaluer principalement la compétence ciblée.
+- La question doit être adaptée au niveau de la compétence.
+- La question doit appeler une réponse courte et précise.
+- La réponse attendue doit être concise : un résultat, une formule ou une expression.
 - Les calculs doivent être mathématiquement corrects.
+- Évite les questions trop générales ou qui nécessitent un long développement.
 
 Règles de sortie — TRÈS IMPORTANT :
 - Réponds UNIQUEMENT avec un JSON valide, rien d'autre.
