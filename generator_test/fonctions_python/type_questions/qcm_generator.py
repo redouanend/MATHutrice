@@ -113,17 +113,39 @@ def post_process(question: dict) -> dict:
 # ─── GÉNÉRATION ───────────────────────────────────────────────────────────────
 
 
-def generate_qcm_question(notion: str, niveau: str) -> dict | None:
-    """Génère une question QCM validée et vérifiée. Retourne None si échec."""
-    prompt = build_prompt(notion, niveau)
-    return call_mistral(prompt, notion, parse_and_validate, post_process)
+# def generate_qcm_question(notion: str, niveau: str) -> dict | None:
+#     """Génère une question QCM validée et vérifiée. Retourne None si échec."""
+#     prompt = build_prompt(notion, niveau)
+#     return call_mistral(prompt, notion, parse_and_validate, post_process)
 
 
-def generate_qcm_test(notion: str, niveau: str, n: int) -> list[dict]:
-    """Génère un test de n questions QCM."""
-    return generate_test(notion, niveau, n, generate_qcm_question)
+# def generate_qcm_test(notion: str, niveau: str, n: int) -> list[dict]:
+#     """Génère un test de n questions QCM."""
+#     return generate_test(notion, niveau, n, generate_qcm_question)
+
+def generate_qcm_question(notion_nom: str, competence: dict) -> dict | None:
+    """Génère une question QCM validée à partir d'une compétence déjà choisie."""
+
+    prompt = build_prompt(
+        notion_nom=notion_nom,
+        competence=competence
+    )
+
+    return call_mistral(prompt, notion_nom, parse_and_validate, post_process)
 
 
+def generate_qcm_test(notion_nom: str, competences: list[dict]) -> list[dict]:
+    """Génère un test QCM à partir d'une liste de compétences déjà choisies."""
+
+    questions = []
+
+    for competence in competences:
+        question = generate_qcm_question(notion_nom, competence)
+
+        if question is not None:
+            questions.append(question)
+
+    return questions
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
 

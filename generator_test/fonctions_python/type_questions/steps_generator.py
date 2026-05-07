@@ -151,17 +151,46 @@ def parse_and_validate(raw: str) -> dict:
 # ─── GÉNÉRATION ───────────────────────────────────────────────────────────────
 
 
-def generate_steps_question(notion: str, niveau: str) -> dict | None:
-    """Génère un exercice step by step validé. Retourne None si échec."""
-    prompt = build_prompt(notion, niveau)
-    return call_mistral(prompt, notion, parse_and_validate)
+# def generate_steps_question(notion: str, niveau: str) -> dict | None:
+#     """Génère un exercice step by step validé. Retourne None si échec."""
+#     prompt = build_prompt(notion, niveau)
+#     return call_mistral(prompt, notion, parse_and_validate)
 
 
-def generate_steps_test(notion: str, niveau: str, n: int) -> list[dict]:
-    """Génère n exercices step by step."""
-    return generate_test(notion, niveau, n, generate_steps_question)
+# def generate_steps_test(notion: str, niveau: str, n: int) -> list[dict]:
+#     """Génère n exercices step by step."""
+#     return generate_test(notion, niveau, n, generate_steps_question)
+def generate_steps_question(notion_nom: str, competences: list[dict]) -> dict | None:
+    """Génère un exercice step by step à partir de compétences déjà choisies."""
+
+    prompt = build_prompt(
+        notion_nom=notion_nom,
+        competences=competences
+    )
+
+    return call_mistral(prompt, notion_nom, parse_and_validate)
 
 
+def generate_steps_test(notion_nom: str, competences_groupes: list[list[dict]]) -> list[dict]:
+    """
+    Génère plusieurs exercices step by step.
+
+    competences_groupes est une liste de listes :
+    [
+        [comp1, comp2, comp3],
+        [comp4, comp5, comp6],
+    ]
+    """
+
+    exercices = []
+
+    for competences in competences_groupes:
+        exercice = generate_steps_question(notion_nom, competences)
+
+        if exercice is not None:
+            exercices.append(exercice)
+
+    return exercices
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
 
