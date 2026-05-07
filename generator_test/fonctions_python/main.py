@@ -19,7 +19,7 @@ import argparse
 from type_questions.qcm_generator import generate_qcm_test, run_test as run_qcm
 from type_questions.qro_generator import generate_qro_test, run_test as run_qro
 from type_questions.steps_generator import generate_steps_test, run_test as run_sbs
-
+from base_generator import choisir_competence
 
 # ─── NOTIONS DISPONIBLES ──────────────────────────────────────────────────────
 
@@ -199,6 +199,18 @@ REFERENTIEL = {
     }
 }
 
+# NOTIONS = [
+#     notion_data["notion_nom"]
+#     for notion_data in REFERENTIEL.values()
+# ]
+
+# NIVEAUX = sorted({
+#     competence["niveau"]
+#     for notion_data in REFERENTIEL.values()
+#     for competence in notion_data["competences"]
+# })
+NOTIONS = list(REFERENTIEL.keys())
+NIVEAUX = ["basique", "solide", "expert"]
 # ─── MENU INTERACTIF ──────────────────────────────────────────────────────────
 
 
@@ -248,6 +260,37 @@ def run(fmt: str, notion: str, niveau: str, n: int) -> None:
     run_fn(questions)
 
 
+# def generate_mixed_test(
+#     notion: str,
+#     niveau: str,
+#     n_qcm: int = 0,
+#     n_qro: int = 0,
+#     n_steps: int = 0,
+# ) -> list[dict]:
+#     """Génère un test mixte avec QCM, QRO et step by step."""
+#     test = []
+
+#     if n_qcm > 0:
+#         qcms = generate_qcm_test(notion, niveau, n_qcm)
+#         print
+#         for q in qcms:
+#             q["type"] = "qcm"
+#         test.extend(qcms)
+
+#     if n_qro > 0:
+#         qros = generate_qro_test(notion, niveau, n_qro)
+#         for q in qros:
+#             q["type"] = "qro"
+#         test.extend(qros)
+
+#     if n_steps > 0:
+#         steps = generate_steps_test(notion, niveau, n_steps)
+#         for q in steps:
+#             q["type"] = "sbs"
+#         test.extend(steps)
+
+#     return test
+
 def generate_mixed_test(
     notion: str,
     niveau: str,
@@ -255,30 +298,69 @@ def generate_mixed_test(
     n_qro: int = 0,
     n_steps: int = 0,
 ) -> list[dict]:
-    """Génère un test mixte avec QCM, QRO et step by step."""
+
     test = []
 
+    notion_data = REFERENTIEL[notion]
+    notion_nom = notion_data["notion_nom"]
+
     if n_qcm > 0:
-        qcms = generate_qcm_test(notion, niveau, n_qcm)
-        print
+        competences_qcm = [
+            choisir_competence(notion_data, "qcm", niveau)
+            for _ in range(n_qcm)
+        ]
+
+        competences_qcm = [
+            c for c in competences_qcm
+            if c is not None
+        ]
+
+        qcms = generate_qcm_test(notion_nom, competences_qcm)
+
         for q in qcms:
             q["type"] = "qcm"
+
         test.extend(qcms)
 
     if n_qro > 0:
-        qros = generate_qro_test(notion, niveau, n_qro)
+        competences_qro = [
+            choisir_competence(notion_data, "qro", niveau)
+            for _ in range(n_qro)
+        ]
+
+        competences_qro = [
+            c for c in competences_qro
+            if c is not None
+        ]
+
+        qros = generate_qro_test(notion_nom, competences_qro)
+
         for q in qros:
             q["type"] = "qro"
+
         test.extend(qros)
 
     if n_steps > 0:
-        steps = generate_steps_test(notion, niveau, n_steps)
+        competences_groupes_sbs = []
+
+        for _ in range(n_steps):
+            competences = choisir_competence(
+                notion=notion_data,
+                type_exercice="sbs",
+                niveau_eleve=niveau
+            )
+
+            if competences:
+                competences_groupes_sbs.append(competences)
+
+        steps = generate_steps_test(notion_nom, competences_groupes_sbs)
+
         for q in steps:
             q["type"] = "sbs"
+
         test.extend(steps)
 
     return test
-
 
 def run_test(questions: list[dict]) -> None:
     """Lance un test mixte en exécutant chaque question selon son type."""
