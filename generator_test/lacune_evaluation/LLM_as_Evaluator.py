@@ -1,6 +1,11 @@
 from mistralai import Mistral
 import json
 import re
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "generator_test", "fonctions_python"))
+from main import REFERENTIEL
 
 API_KEY = "fOTxUhR9dDPIsmNOCRIxggr0Erhew4yk"
 
@@ -19,8 +24,21 @@ def reperage_lacune(
     reponse_etudiant,
     nb_tentatives,
     dernieres_erreurs,
+    competences=None,
 ):
-    prompt = f""" 
+    if competences:
+        competences_str = "\n".join(
+            f'  - [{c["code"]}] {c["nom"]} (niveau : {c["niveau"]})'
+            for c in competences
+        )
+        competences_section = f"""
+            Compétences de cette notion (utilise UNIQUEMENT ces codes) :
+{competences_str}
+"""
+    else:
+        competences_section = ""
+
+    prompt = f"""
             Tu es un expert en diagnostic pédagogique pour des étudiants
             de première année d'université en mathématiques.
 
@@ -33,7 +51,7 @@ def reperage_lacune(
             - Énoncé : {enonce}
             - Réponse correcte avec étapes : {reponse_correcte}
             - Réponse de l'étudiant : {reponse_etudiant}
-
+{competences_section}
             Informations sur l'historique de l'étudiant :
             - Nombre de tentatives sur cette notion : {nb_tentatives}
             - Dernières erreurs connue : {dernieres_erreurs}
@@ -44,6 +62,9 @@ def reperage_lacune(
             - Si l'erreur ressemble à la dernière erreur connue, marque erreur_recurrente à true.
             - Cherche toujours si l'erreur vient d'une notion prérequise non maîtrisée.
             - Rédige le feedback en "tu", de manière bienveillante, sans donner la réponse complète.
+            - Si une liste de compétences est fournie, identifie dans competences_lacunaires les codes
+              des compétences non maîtrisées. Utilise UNIQUEMENT les codes fournis. Si correct, renvoie [].
+              Si aucune liste n'est fournie, renvoie null.
 
             Taxonomie des types d'erreurs utilise EXACTEMENT ces valeurs :
             - "aucune"             : réponse correcte
@@ -112,7 +133,8 @@ format = """{
         "sous_notion_echouee": "nom précis de la sous-notion en échec ou null",
         "erreur_recurrente": true ou false,
         "lacune_precise": "description claire et précise de ce qui manque ou null",
-        "prerequis_suspect": "notion prérequise probablement non maîtrisée ou null"
+        "prerequis_suspect": "notion prérequise probablement non maîtrisée ou null",
+        "competences_lacunaires": ["code1", "code2"] ou [] si correct ou null si pas de référentiel fourni
     },
     "feedback_etudiant": "explication bienveillante en tu, 2-3 phrases, sans donner la réponse",
     "recommandation": {
@@ -153,6 +175,9 @@ reponse_etudiant = "f'(x) = cos(3x² + 1)"
 nb_tentatives = 2
 dernieres_erreurs = "incomplet"
 
+notion_key = "logarithme_exponentielle"
+competences = REFERENTIEL[notion_key]["competences"]
+
 prompt = reperage_lacune(
     notion,
     niveau,
@@ -162,6 +187,7 @@ prompt = reperage_lacune(
     reponse_etudiant,
     nb_tentatives,
     dernieres_erreurs,
+    competences=competences,
 )
 
 response = client.chat.complete(
