@@ -255,10 +255,12 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
 
     # Pour un QCM ou une QRO, on renvoie une seule compétence au hasard
     if type_exercice in ["qcm", "qro"]:
+        print(competences_candidates)
         return random.choice(competences_candidates) if competences_candidates else None
 
     # Pour SBS, on renvoie toute la liste des compétences candidates
     if type_exercice == "sbs":
+        print("sbs", competences_candidates)
         return competences_candidates
 
 
