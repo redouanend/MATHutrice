@@ -22,7 +22,9 @@ import re
 import json
 import logging
 from mistralai import Mistral
-# from main import REFERENTIEL  # import de la liste des compétences
+from generator_test.lacune_evaluation.LLM_as_Evaluator import competences_dict
+from main import REFERENTIEL
+
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 
@@ -260,122 +262,18 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
         return competences_candidates
 
 
-############## FONCTION POUR RECONNAISSANCE DES COMPETENCES TESTEE ET DU FORMAT DE LA QUESTION ###############
-
-# règles de scoring
-SCORING_RULES = {
-    "QCM": {
-        "facile": (0.2, -0.4),
-        "intermediaire": (0.3, -0.3),
-        "difficile": (0.4, -0.2),
-    },
-    "QRO": {
-        "facile": (0.3, -0.4),
-        "intermediaire": (0.4, -0.3),
-        "difficile": (0.5, -0.2),
-    },
-    "SBS": {
-        "facile": (0.4, -0.4),
-        "intermediaire": (0.5, -0.3),
-        "difficile": (0.6, -0.2),
-    },
-}
-
-REFERENTIEL = {
-    "analyse_dimensionnelle": {
-        "notion_nom": "Analyse dimensionnelle",
-        "competences": [
-            {
-                "code": "ad01",
-                "nom": "Distinguer dimension et unité",
-                "niveau": "basique",
-                "score": 1.0,
-            },
-            {
-                "code": "ad02",
-                "nom": "Connaître les 7 grandeurs fondamentales du SI",
-                "niveau": "basique",
-                "score": 1.0,
-            },
-            {
-                "code": "ad03",
-                "nom": "Règles de calcul sur les dimensions",
-                "niveau": "solide",
-                "score": 0.0,
-            },
-            {
-                "code": "ad04",
-                "nom": "Règles de calcul sur les puissances en contexte dimensionnel",
-                "niveau": "basique",
-                "score": 1.0,
-            },
-            {
-                "code": "ad05",
-                "nom": "Établir la dimension d'une grandeur dérivée",
-                "niveau": "solide",
-                "score": 0.0,
-            },
-            {
-                "code": "ad06",
-                "nom": "Convertir unité dérivée en unités de base",
-                "niveau": "solide",
-                "score": 0.0,
-            },
-            {
-                "code": "ad07",
-                "nom": "Vérifier l'homogénéité d'une formule",
-                "niveau": "solide",
-                "score": 0.0,
-            },
-            {
-                "code": "ad08",
-                "nom": "Déduire la dimension d'une grandeur inconnue",
-                "niveau": "expert",
-                "score": 0.0,
-            },
-            {
-                "code": "ad09",
-                "nom": "Identifier les paramètres pertinents en modélisation",
-                "niveau": "expert",
-                "score": 0.0,
-            },
-            {
-                "code": "ad10",
-                "nom": "Résoudre une équation aux dimensions par identification d'exposants",
-                "niveau": "expert",
-                "score": 0.0,
-            },
-            {
-                "code": "ad11",
-                "nom": "Interpréter physiquement le résultat",
-                "niveau": "expert",
-                "score": 0.0,
-            },
-            {
-                "code": "ad12",
-                "nom": "Connaître et utiliser les constantes fondamentales",
-                "niveau": "solide",
-                "score": 0.0,
-            },
-        ],
-    }
-}
-
-
 # DICTIONNAIRE FICTIF TEMPORAIRE avec compétences evaluées dans une questions donnée et lesquelles sont bonnes ou fausses
-
-competences_dict = {"ad01": True, "ad02": False, "ad03": True, "ad04": False}
 
 question_format = {"type": "QCM", "niveau": "facile"}
 
 
 # FONCTION POUR METTRE A JOUR LE REFERENTIEL APRES UN TEST
-def update_scores(referentiel, question_format, competences_dict):
+def update_scores(REFERENTIEL, question_format, competences_dict):
     """
     Met à jour les scores des compétences évaluées dans une question.
 
     Paramètres :
-    - referentiel : dictionnaire contenant toutes les notions et compétences
+    - REFERENTIEL : dictionnaire contenant toutes les notions et compétences
     - question_format : dictionnaire décrivant le format de la question
         Exemple :
         {
@@ -393,7 +291,7 @@ def update_scores(referentiel, question_format, competences_dict):
       }
 
     Retour :
-    - referentiel mis à jour
+    - REFERENTIEL mis à jour
     """
 
     # RÈGLES DE BONUS / MALUS (à valider en groupe)
@@ -420,7 +318,7 @@ def update_scores(referentiel, question_format, competences_dict):
     niveau_question = question_format["niveau"]
     bonus, malus = scoring_rules[type_question][niveau_question]
 
-    for notion in referentiel.values():
+    for notion in REFERENTIEL.values():
         for competence in notion["competences"]:
             code_competence = competence["code"]
 
@@ -436,7 +334,7 @@ def update_scores(referentiel, question_format, competences_dict):
                 # SI RÉPONSE FAUSSE
                 else:
                     competence["score"] += malus
-    return referentiel
+    return REFERENTIEL
 
 
 ################# TEST de la fonction update_scores #################### Test OK
