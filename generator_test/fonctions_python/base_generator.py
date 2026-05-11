@@ -22,8 +22,8 @@ import re
 import json
 import logging
 from mistralai import Mistral
-from generator_test.lacune_evaluation.LLM_as_Evaluator import competences_dict
-from main import REFERENTIEL
+# from generator_test.lacune_evaluation.LLM_as_Evaluator import competences_dict
+# from main import REFERENTIEL
 
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
