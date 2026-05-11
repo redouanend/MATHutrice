@@ -214,6 +214,7 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
 
     # On garde seulement les compétences du niveau actuel de l'élève
     competences_niveau = [c for c in competences if c["niveau"] == niveau_eleve]
+    print("les comp du niveau sont:", competences_niveau)
 
     # Si aucune compétence ne correspond au niveau demandé
     if not competences_niveau:
@@ -243,22 +244,24 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
         competences_candidates = [
             c
             for c in competences
-            if c["niveau"] in niveaux_autorises and c["score"] < 0.8
+            if c["niveau"] in niveaux_autorises and c["score"] < 1.0
         ]
 
     else:
         # Si l'élève ne maîtrise pas encore assez son niveau,
-        # on reste uniquement sur les compétences de son niveau actuel
+        # on reste vraiment uniquement sur les compétences de son niveau actuel
         competences_candidates = [
-            c for c in competences if c["niveau"] == niveau_eleve and c["score"] < 0.8
+            c for c in competences if c["niveau"] == niveau_eleve and c["score"] < 1.0
         ]
 
     # Pour un QCM ou une QRO, on renvoie une seule compétence au hasard
     if type_exercice in ["qcm", "qro"]:
+        print(competences_candidates)
         return random.choice(competences_candidates) if competences_candidates else None
 
     # Pour SBS, on renvoie toute la liste des compétences candidates
     if type_exercice == "sbs":
+        print("sbs", competences_candidates)
         return competences_candidates
 
 
