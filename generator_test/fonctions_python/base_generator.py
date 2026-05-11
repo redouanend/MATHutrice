@@ -249,7 +249,7 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
 
     else:
         # Si l'élève ne maîtrise pas encore assez son niveau,
-        # on reste uniquement sur les compétences de son niveau actuel
+        # on reste vraiment uniquement sur les compétences de son niveau actuel
         competences_candidates = [
             c for c in competences if c["niveau"] == niveau_eleve and c["score"] < 1.0
         ]
