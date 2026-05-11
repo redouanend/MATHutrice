@@ -22,6 +22,7 @@ import re
 import json
 import logging
 from mistralai import Mistral
+# from main import REFERENTIEL  # import de la liste des compétences
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 
@@ -33,7 +34,6 @@ MODEL = "mistral-small"
 MAX_RETRIES = 3
 
 client = Mistral(api_key=API_KEY)
-
 
 # ─── UTILITAIRES JSON ─────────────────────────────────────────────────────────
 
@@ -184,6 +184,7 @@ def print_question_header(index: int, total: int, extra: str = "") -> None:
     # print(label)
     # print(f"{'─' * 50}")
 
+
 import random
 
 
@@ -210,10 +211,7 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
     competences = notion["competences"]
 
     # On garde seulement les compétences du niveau actuel de l'élève
-    competences_niveau = [
-        c for c in competences
-        if c["niveau"] == niveau_eleve
-    ]
+    competences_niveau = [c for c in competences if c["niveau"] == niveau_eleve]
 
     # Si aucune compétence ne correspond au niveau demandé
     if not competences_niveau:
@@ -221,10 +219,7 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
 
     # Nombre de compétences du niveau actuel considérées comme maîtrisées
     # Une compétence est maîtrisée si son score est strictement supérieur à 0.8
-    nb_acquises = sum(
-        1 for c in competences_niveau
-        if c["score"] > 0.8
-    )
+    nb_acquises = sum(1 for c in competences_niveau if c["score"] > 0.8)
 
     # Proportion de compétences maîtrisées dans le niveau actuel
     proportion_acquises = nb_acquises / len(competences_niveau)
@@ -244,7 +239,8 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
         # On sélectionne les compétences non maîtrisées
         # dans le niveau actuel + le niveau supérieur
         competences_candidates = [
-            c for c in competences
+            c
+            for c in competences
             if c["niveau"] in niveaux_autorises and c["score"] < 0.8
         ]
 
@@ -252,8 +248,7 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
         # Si l'élève ne maîtrise pas encore assez son niveau,
         # on reste uniquement sur les compétences de son niveau actuel
         competences_candidates = [
-            c for c in competences
-            if c["niveau"] == niveau_eleve and c["score"] < 0.8
+            c for c in competences if c["niveau"] == niveau_eleve and c["score"] < 0.8
         ]
 
     # Pour un QCM ou une QRO, on renvoie une seule compétence au hasard
@@ -263,3 +258,202 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
     # Pour SBS, on renvoie toute la liste des compétences candidates
     if type_exercice == "sbs":
         return competences_candidates
+
+
+############## FONCTION POUR RECONNAISSANCE DES COMPETENCES TESTEE ET DU FORMAT DE LA QUESTION ###############
+
+# règles de scoring
+SCORING_RULES = {
+    "QCM": {
+        "facile": (0.2, -0.4),
+        "intermediaire": (0.3, -0.3),
+        "difficile": (0.4, -0.2),
+    },
+    "QRO": {
+        "facile": (0.3, -0.4),
+        "intermediaire": (0.4, -0.3),
+        "difficile": (0.5, -0.2),
+    },
+    "SBS": {
+        "facile": (0.4, -0.4),
+        "intermediaire": (0.5, -0.3),
+        "difficile": (0.6, -0.2),
+    },
+}
+
+REFERENTIEL = {
+    "analyse_dimensionnelle": {
+        "notion_nom": "Analyse dimensionnelle",
+        "competences": [
+            {
+                "code": "ad01",
+                "nom": "Distinguer dimension et unité",
+                "niveau": "basique",
+                "score": 1.0,
+            },
+            {
+                "code": "ad02",
+                "nom": "Connaître les 7 grandeurs fondamentales du SI",
+                "niveau": "basique",
+                "score": 1.0,
+            },
+            {
+                "code": "ad03",
+                "nom": "Règles de calcul sur les dimensions",
+                "niveau": "solide",
+                "score": 0.0,
+            },
+            {
+                "code": "ad04",
+                "nom": "Règles de calcul sur les puissances en contexte dimensionnel",
+                "niveau": "basique",
+                "score": 1.0,
+            },
+            {
+                "code": "ad05",
+                "nom": "Établir la dimension d'une grandeur dérivée",
+                "niveau": "solide",
+                "score": 0.0,
+            },
+            {
+                "code": "ad06",
+                "nom": "Convertir unité dérivée en unités de base",
+                "niveau": "solide",
+                "score": 0.0,
+            },
+            {
+                "code": "ad07",
+                "nom": "Vérifier l'homogénéité d'une formule",
+                "niveau": "solide",
+                "score": 0.0,
+            },
+            {
+                "code": "ad08",
+                "nom": "Déduire la dimension d'une grandeur inconnue",
+                "niveau": "expert",
+                "score": 0.0,
+            },
+            {
+                "code": "ad09",
+                "nom": "Identifier les paramètres pertinents en modélisation",
+                "niveau": "expert",
+                "score": 0.0,
+            },
+            {
+                "code": "ad10",
+                "nom": "Résoudre une équation aux dimensions par identification d'exposants",
+                "niveau": "expert",
+                "score": 0.0,
+            },
+            {
+                "code": "ad11",
+                "nom": "Interpréter physiquement le résultat",
+                "niveau": "expert",
+                "score": 0.0,
+            },
+            {
+                "code": "ad12",
+                "nom": "Connaître et utiliser les constantes fondamentales",
+                "niveau": "solide",
+                "score": 0.0,
+            },
+        ],
+    }
+}
+
+
+# DICTIONNAIRE FICTIF TEMPORAIRE avec compétences evaluées dans une questions donnée et lesquelles sont bonnes ou fausses
+
+competences_dict = {"ad01": True, "ad02": False, "ad03": True, "ad04": False}
+
+question_format = {"type": "QCM", "niveau": "facile"}
+
+
+# FONCTION POUR METTRE A JOUR LE REFERENTIEL APRES UN TEST
+def update_scores(referentiel, question_format, competences_dict):
+    """
+    Met à jour les scores des compétences évaluées dans une question.
+
+    Paramètres :
+    - referentiel : dictionnaire contenant toutes les notions et compétences
+    - question_format : dictionnaire décrivant le format de la question
+        Exemple :
+        {
+            "type": "QCM",
+            "niveau": "facile"
+        }
+
+    - competences_dict : dictionnaire contenant les compétences évaluées
+      ainsi que le résultat de l'étudiant.
+
+      Exemple :
+      {
+          "ad01": True,
+          "ad03": False
+      }
+
+    Retour :
+    - referentiel mis à jour
+    """
+
+    # RÈGLES DE BONUS / MALUS (à valider en groupe)
+
+    scoring_rules = {
+        "QCM": {
+            "facile": (0.2, -0.4),
+            "intermediaire": (0.3, -0.3),
+            "difficile": (0.4, -0.2),
+        },
+        "QRO": {
+            "facile": (0.3, -0.4),
+            "intermediaire": (0.4, -0.3),
+            "difficile": (0.5, -0.2),
+        },
+        "SBS": {
+            "facile": (0.4, -0.4),
+            "intermediaire": (0.5, -0.3),
+            "difficile": (0.6, -0.2),
+        },
+    }
+
+    type_question = question_format["type"]
+    niveau_question = question_format["niveau"]
+    bonus, malus = scoring_rules[type_question][niveau_question]
+
+    for notion in referentiel.values():
+        for competence in notion["competences"]:
+            code_competence = competence["code"]
+
+            # VÉRIFICATION :
+            # la compétence a-t-elle été évaluée
+            # dans cette question ?
+            if code_competence in competences_dict:
+                # SI RÉPONSE CORRECTE
+
+                if competences_dict[code_competence] is True:
+                    competence["score"] += bonus
+
+                # SI RÉPONSE FAUSSE
+                else:
+                    competence["score"] += malus
+    return referentiel
+
+
+################# TEST de la fonction update_scores #################### Test OK
+if __name__ == "__main__":
+    print("\n===== AVANT =====")
+
+    for notion in REFERENTIEL.values():
+        for competence in notion["competences"]:
+            if competence["code"] in competences_dict:
+                print(competence["code"], "| score =", competence["score"])
+
+    # appel de la fonction
+    update_scores(REFERENTIEL, question_format, competences_dict)
+
+    print("\n===== APRES =====")
+
+    for notion in REFERENTIEL.values():
+        for competence in notion["competences"]:
+            if competence["code"] in competences_dict:
+                print(competence["code"], "| score =", competence["score"])
