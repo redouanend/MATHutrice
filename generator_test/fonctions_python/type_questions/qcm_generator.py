@@ -143,14 +143,15 @@ def generate_qcm_test(notion_nom: str, competences: list[dict]) -> list[dict]:
         question = generate_qcm_question(notion_nom, competence)
 
         if question is not None:
+            question["competence_cible"] = competence
             questions.append(question)
 
     return questions
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
 
-def ask_question(index: int, total: int, q: dict) -> bool:
-    """Pose une question QCM dans le terminal. Retourne True si bonne réponse."""
+def ask_question(index: int, total: int, q: dict) -> tuple[bool, str]:
+    """Pose une question QCM dans le terminal. Retourne (correct, option_choisie)."""
     verified = q.get("verified", False)
     corrected = q.get("corrected", False)
 
@@ -181,7 +182,7 @@ def ask_question(index: int, total: int, q: dict) -> bool:
     else:
         print(f"  ❌ Incorrect. La bonne réponse était : {q['answer']}")
 
-    return correct
+    return correct, chosen
 
 
 # Faut faire un main globale des 3 formats
@@ -197,7 +198,8 @@ def run_test(questions: list[dict]) -> None:
     # print_test_header(total, "QCM")
 
     for i, q in enumerate(questions, 1):
-        if ask_question(i, total, q):
+        correct, _ = ask_question(i, total, q)
+        if correct:
             score += 1
 
     display_score(score, total, "QCM")

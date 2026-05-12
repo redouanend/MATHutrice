@@ -188,18 +188,19 @@ def generate_steps_test(notion_nom: str, competences_groupes: list[list[dict]]) 
         exercice = generate_steps_question(notion_nom, competences)
 
         if exercice is not None:
+            exercice["competences_cibles"] = competences
             exercices.append(exercice)
 
     return exercices
 # ─── INTERFACE CONSOLE ────────────────────────────────────────────────────────
 
 
-def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
+def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int, list[str]]:
     """
     Pose un exercice step by step dans le terminal.
     Affiche toutes les étapes même si l'étudiant se trompe
     — l'objectif est de détecter exactement où est l'erreur.
-    Retourne (score_obtenu, total_etapes).
+    Retourne (score_obtenu, total_etapes, reponses_etudiant).
     """
     print_question_header(index, total)
     print(f"\n📋 Énoncé :\n{ex['enonce']}\n")
@@ -210,7 +211,8 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
 
     score_ex = 0
     total_ex = len(ex["questions"])
-    first_error = None  # index de la première étape fausse
+    first_error = None
+    student_answers = []
 
     for i, (question, correct) in enumerate(
         zip(ex["questions"], ex["correct_answers"]), 1
@@ -219,6 +221,7 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
         print(f"  Étape {i}/{total_ex} : {question}")
 
         user_answer = input("  Votre réponse : ").strip()
+        student_answers.append(user_answer)
 
         if not user_answer:
             print(f"  ⚠ Réponse vide.")
@@ -256,7 +259,7 @@ def ask_exercice(index: int, total: int, ex: dict) -> tuple[int, int]:
         print("  🏆 Toutes les étapes sont correctes !")
     print(f"  {'═' * 44}\n")
 
-    return score_ex, total_ex
+    return score_ex, total_ex, student_answers
 
 
 def run_test(exercices: list[dict]) -> None:
@@ -272,7 +275,7 @@ def run_test(exercices: list[dict]) -> None:
     # print_test_header(total_ex, "STEP BY STEP")
 
     for i, ex in enumerate(exercices, 1):
-        score_ex, nb_etapes = ask_exercice(i, total_ex, ex)
+        score_ex, nb_etapes, _ = ask_exercice(i, total_ex, ex)
         score_total += score_ex
         max_total += nb_etapes
 
