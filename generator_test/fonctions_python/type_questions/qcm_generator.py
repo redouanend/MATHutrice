@@ -41,10 +41,10 @@ Ta tâche est de générer UNE question QCM de mathématiques.
 
 Informations :
 - Notion : {notion_nom}
-- Code compétence : {competence["code"]}
-- Compétence ciblée : {competence["nom"]}
-- Niveau : {competence["niveau"]}
-- Score actuel : {competence["score"]}
+- Code compétence : {competence[0]["code"]}
+- Compétence ciblée : {competence[0]["nom"]}
+- Niveau : {competence[0]["niveau"]}
+- Score actuel : {competence[0]["score"]}
 
 Contraintes pédagogiques :
 - La question doit évaluer principalement la compétence ciblée.

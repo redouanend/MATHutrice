@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <!--resp tel/tab-->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>MATHutrice — Accueil</title>
+
+  <!--font princ = mm style que module-->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /*vars globales*/
+    :root{
+      --purple-dark:#542365;
+      --purple-light:#8c52f0;
+      --pink-soft:#f8abe0;
+      --red-main:#ca1328;
+      --red-coral:#ff5757;
+      --pink-hot:#cb0a67;
+      --white:#ffffff;
+      --text-dark:#1a0a20;
+      --text-muted:#7a5a85;
+      --text-light:#b89ec5;
+      --border:rgba(84,35,101,0.12);
+      --shadow:0 10px 28px rgba(84,35,101,0.16);
+      --shadow-card:0 10px 28px rgba(84,35,101,0.14);
+      --shadow-hover:0 14px 36px rgba(84,35,101,0.20);
+      --radius:18px;
+      --star-full:#ffe14d;
+      --star-empty:rgba(255,255,255,0.88);
+    }
+
+    /*reset de base*/
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      min-height:100vh;
+      font-family:'Poppins',sans-serif;
+      color:var(--text-dark);
+
+      /*bg accueil -> raccord avec module mais + vivant*/
+      background:
+        radial-gradient(circle at top right,rgba(248,171,224,0.22),transparent 24%),
+        radial-gradient(circle at left bottom,rgba(140,82,240,0.14),transparent 30%),
+        linear-gradient(135deg,var(--purple-dark) 0%,var(--pink-hot) 55%,var(--purple-light) 100%);
+    }
+
+    /*centre tt au milieu*/
+    .page{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 20px;
+    }
+
+    /*conteneur princ*/
+    .home-shell{
+      width:100%;
+      max-width:980px;
+      position:relative;
+    }
+
+    /*zone haut = titre + chat*/
+    .hero{
+      text-align:center;
+      position:relative;
+      margin-bottom:34px;
+    }
+
+    /*petit halo derriere le titre*/
+    .hero::before{
+      content:'';
+      position:absolute;
+      top:-28px;
+      left:50%;
+      transform:translateX(-50%);
+      width:240px;
+      height:240px;
+      background:radial-gradient(circle,rgba(255,255,255,0.10),transparent 70%);
+      pointer-events:none;
+    }
+
+    .title{
+      color:white;
+      font-size:52px;
+      font-weight:800;
+      line-height:1.05;
+      margin-bottom:24px;
+      position:relative;
+      z-index:1;
+      letter-spacing:-1px;
+    }
+
+    /*ligne chat*/
+    .chat-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      margin-bottom:14px;
+      position:relative;
+      z-index:1;
+    }
+
+    /*form du chatbot*/
+    .chat-form{
+      width:min(100%,560px);
+      display:flex;
+      align-items:center;
+      background:rgba(255,255,255,0.94);
+      border:2px solid rgba(140,82,240,0.32);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(8px);
+    }
+
+    /*input msg*/
+    .chat-input{
+      flex:1;
+      border:none;
+      outline:none;
+      background:transparent;
+      padding:16px 18px;
+      font-family:'Poppins',sans-serif;
+      font-size:14px;
+      color:var(--text-dark);
+    }
+
+    /*txt avant saisie*/
+    .chat-input::placeholder{
+      color:#9c6fd6;
+      font-weight:600;
+    }
+
+    /*btn envoi*/
+    .chat-send{
+      width:56px;
+      height:52px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--purple-light),var(--pink-hot));
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:transform 0.2s,opacity 0.2s;
+    }
+
+    .chat-send:hover{
+      transform:scale(1.03);
+      opacity:0.96;
+    }
+
+    /*btn pj*/
+    .attach-btn{
+      width:52px;
+      height:52px;
+      border:none;
+      border-radius:16px;
+      cursor:pointer;
+      color:white;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+      transition:transform 0.2s,background 0.2s;
+      flex-shrink:0;
+    }
+
+    .attach-btn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,0.24);
+    }
+
+    /*txt aide*/
+    .helper-text{
+      text-align:center;
+      color:rgba(255,255,255,0.80);
+      font-size:13px;
+      font-weight:500;
+    }
+
+    /*grille des modules*/
+    .modules-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    /*carte module*/
+    .module-card{
+      min-height:88px;
+      border-radius:var(--radius);
+      padding:18px 20px;
+      background:linear-gradient(135deg,rgba(84,35,101,0.24),rgba(248,171,224,0.18));
+      border:1.5px solid rgba(255,255,255,0.24);
+      box-shadow:var(--shadow-card);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      text-decoration:none;
+      backdrop-filter:blur(10px);
+      transition:transform 0.22s,box-shadow 0.22s,border-color 0.22s;
+    }
+
+    .module-card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-hover);
+      border-color:rgba(255,255,255,0.42);
+    }
+
+    /*gauche = nom + sous txt*/
+    .module-left{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+
+    .module-name{
+      color:white;
+      font-size:26px;
+      font-weight:800;
+      text-transform:uppercase;
+      line-height:1;
+    }
+
+    .module-sub{
+      color:rgba(255,255,255,0.76);
+      font-size:12px;
+      font-weight:500;
+      line-height:1.35;
+    }
+
+    /*bloc etoiles = progression*/
+    .stars{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      flex-shrink:0;
+    }
+
+    .star{
+      width:24px;
+      height:24px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .star svg{
+      width:100%;
+      height:100%;
+      display:block;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.14));
+    }
+
+    .star.full path{
+      fill:var(--star-full);
+      stroke:rgba(255,255,255,0.25);
+      stroke-width:0.5;
+    }
+
+    .star.empty path{
+      fill:var(--star-empty);
+      stroke:rgba(84,35,101,0.10);
+      stroke-width:0.5;
+    }
+
+    /*input file caché -> declenché par btn pj*/
+    #fileInput{
+      display:none;
+    }
+
+    /*resp tablette/mobile*/
+    @media (max-width:680px){
+      .page{
+        padding:24px 14px;
+      }
+
+      .title{
+        font-size:38px;
+      }
+
+      .modules-grid{
+        grid-template-columns:1fr;
+      }
+
+      .module-name{
+        font-size:21px;
+      }
+
+      .star{
+        width:21px;
+        height:21px;
+      }
+    }
+
+    /*petits tel*/
+    @media (max-width:430px){
+      .chat-input{
+        font-size:13px;
+        padding:14px 14px;
+      }
+
+      .chat-send,
+      .attach-btn{
+        width:48px;
+        height:48px;
+      }
+
+      .module-card{
+        padding:16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="home-shell">
+
+      <!--hero = bloc du haut-->
+      <section class="hero">
+        <h1 class="title">Discutons !</h1>
+
+        <!--barre chat + pj-->
+        <div class="chat-row">
+          <form class="chat-form" id="chatForm">
+            <input
+              class="chat-input"
+              id="chatInput"
+              type="text"
+              placeholder="Pose une question, demande une explication..."
+            >
+
+            <!--btn submit -> plus tard branché au back-->
+            <button class="chat-send" type="submit" aria-label="Envoyer">
+              <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M4 20L20 12L4 4L6.5 10.5L14 12L6.5 13.5L4 20Z" fill="white"/>
+              </svg>
+            </button>
+          </form>
+
+          <!--btn pj -> ouvre input caché-->
+          <button class="attach-btn" id="attachBtn" type="button" aria-label="Ajouter un fichier">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+              <path d="M12 16V7M12 7L8.5 10.5M12 7L15.5 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 16.5V17C5 18.1046 5.89543 19 7 19H17C18.1046 19 19 18.1046 19 17V16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <!--input caché pr les pj-->
+          <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.txt">
+        </div>
+
+        <p class="helper-text">Choisis un module ou pose directement ta question.</p>
+      </section>
+
+      <!--grid modules -> remplie en js-->
+      <section class="modules-grid" id="modulesGrid"></section>
+
+    </div>
+  </div>
+
+  <script>
+    //data simul des modules
+    //plus tard -> back / json / bdd
+    const modules = [
+      {
+        name:"Trigonométrie",
+        subtitle:"Fonctions, cercle trigo, identités",
+        stars:2,
+        totalStars:3,
+        link:"module.html?module=trigonométrie&niveau=intermédiaire"
+      },
+      {
+        name:"Fractions",
+        subtitle:"Calculs, simplification, priorités",
+        stars:3,
+        totalStars:3,
+        link:"module.html?module=fractions&niveau=intermédiaire"
+      },
+      {
+        name:"Équations",
+        subtitle:"1er degré, 2nd degré, résolution",
+        stars:1,
+        totalStars:3,
+        link:"module.html?module=équations&niveau=intermédiaire"
+      },
+      {
+        name:"Algèbre",
+        subtitle:"Calcul littéral, factos, dvpt",
+        stars:2,
+        totalStars:3,
+        link:"module.html?module=algèbre&niveau=intermédiaire"
+      },
+      {
+        name:"Géométrie",
+        subtitle:"Angles, triangles, longueurs",
+        stars:0,
+        totalStars:3,
+        link:"module.html?module=géométrie&niveau=intermédiaire"
+      },
+      {
+        name:"Suites",
+        subtitle:"Arith., géom., récurrence",
+        stars:0,
+        totalStars:3,
+        link:"module.html?module=suites&niveau=intermédiaire"
+      }
+    ];
+
+    //refs dom
+    const modulesGrid = document.getElementById("modulesGrid");
+    const attachBtn = document.getElementById("attachBtn");
+    const fileInput = document.getElementById("fileInput");
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+
+    //fn pr générer 1 etoile
+    function getStarSVG(type){
+      return `
+        <span class="star ${type}">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2.9L14.75 8.47L20.9 9.36L16.45 13.69L17.5 19.8L12 16.91L6.5 19.8L7.55 13.69L3.1 9.36L9.25 8.47L12 2.9Z"></path>
+          </svg>
+        </span>
+      `;
+    }
+
+    //render cartes modules
+    //evite d'ecrire 6 fois le mm html
+    modules.forEach((module) => {
+      const starsHTML = Array.from({ length:module.totalStars },(_,i) =>
+        i < module.stars ? getStarSVG("full") : getStarSVG("empty")
+      ).join("");
+
+      const card = document.createElement("a");
+      card.className = "module-card";
+      card.href = module.link;
+
+      card.innerHTML = `
+        <div class="module-left">
+          <div class="module-name">${module.name}</div>
+          <div class="module-sub">${module.subtitle}</div>
+        </div>
+        <div class="stars">${starsHTML}</div>
+      `;
+
+      modulesGrid.appendChild(card);
+    });
+
+    //btn pj -> ouvre l'input file
+    attachBtn.addEventListener("click",() => {
+      fileInput.click();
+    });
+
+    //tmp test selection fichier
+    //plus tard -> upload vers back
+    fileInput.addEventListener("change",() => {
+      if(fileInput.files.length > 0){
+        alert(fileInput.files.length + " fichier(s) sélectionné(s).");
+      }
+    });
+
+    //submit chat
+    //pour l'instant -> simple test local
+    chatForm.addEventListener("submit",(e) => {
+      e.preventDefault();
+
+      const msg = chatInput.value.trim();
+
+      //si vide -> rien
+      if(!msg){
+        return;
+      }
+
+      //tmp test
+      alert("Message saisi : " + msg);
+
+      //vide l'input après envoi
+      chatInput.value = "";
+    });
+  </script>
+</body>
+</html>

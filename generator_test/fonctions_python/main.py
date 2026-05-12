@@ -939,6 +939,7 @@ def generate_mixed_test(
     return test
 
 
+<<<<<<< HEAD
 def afficher_competences_dict(competences_dict: dict) -> None:
     SEP = "-" * 60
     print(f"\n{SEP}")
@@ -948,6 +949,8 @@ def afficher_competences_dict(competences_dict: dict) -> None:
     print(SEP)
 
 
+=======
+>>>>>>> 943a864e86c43a587f17e907a5ecc0629102c703
 def run_test(questions: list[dict]) -> None:
     """Lance un test mixte en exécutant chaque question selon son type."""
     import sys, os
