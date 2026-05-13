@@ -938,6 +938,54 @@ def generate_mixed_test(
 
     return test
 
+
+def afficher_competences_dict(competences_dict: dict) -> None:
+    SEP = "-" * 60
+    print(f"\n{SEP}")
+    print("  COMPÉTENCES DICT  (→ update_scores)")
+    print(SEP)
+    print(f"  {competences_dict}")
+    print(SEP)
+
+
+def afficher_delta_scores(anciens: dict, nouveaux: dict) -> None:
+    SEP = "-" * 60
+    print(f"\n{SEP}")
+    print("  SCORES MIS À JOUR")
+    print(SEP)
+    for code in nouveaux:
+        ancien = anciens.get(code, nouveaux[code])
+        nouveau = nouveaux[code]
+        delta = round(nouveau - ancien, 3)
+        fleche = "↑" if delta > 0 else ("↓" if delta < 0 else "=")
+        print(f"  [{code}] : {ancien:.2f} → {nouveau:.2f}  {fleche}")
+    print(SEP)
+
+
+def afficher_bilan(referentiel: dict, scores_initiaux: dict) -> None:
+    comp_noms = {}
+    for notion in referentiel.values():
+        for comp in notion["competences"]:
+            if comp["code"] in scores_initiaux:
+                comp_noms[comp["code"]] = comp["nom"]
+    scores_actuels = {}
+    for notion in referentiel.values():
+        for comp in notion["competences"]:
+            if comp["code"] in scores_initiaux:
+                scores_actuels[comp["code"]] = round(comp["score"], 3)
+    SEP = "=" * 60
+    print(f"\n{SEP}")
+    print("  BILAN DE LA SESSION")
+    print(SEP)
+    for code, score_initial in scores_initiaux.items():
+        score_final = scores_actuels.get(code, score_initial)
+        delta = round(score_final - score_initial, 3)
+        fleche = "↑" if delta > 0 else ("↓" if delta < 0 else "=")
+        nom = comp_noms.get(code, code)
+        print(f"  [{code}] {nom[:42]:<42} : {score_initial:.2f} → {score_final:.2f}  {fleche}")
+    print(SEP)
+
+
 def run_test(questions: list[dict]) -> None:
     """Lance un test mixte en exécutant chaque question selon son type."""
     import sys, os
@@ -948,13 +996,21 @@ def run_test(questions: list[dict]) -> None:
     if _eval_path not in sys.path:
         sys.path.insert(0, _eval_path)
 
+    def _update(q_format, competences_dict):
+        _, anciens, nouveaux = update_scores(REFERENTIEL, q_format, competences_dict)
+        afficher_delta_scores(anciens, nouveaux)
+        for code, ancien in anciens.items():
+            if code not in scores_initiaux:
+                scores_initiaux[code] = ancien
+
+    scores_initiaux = {}
     total = len(questions)
+    from LLM_as_Evaluator import diagnostiquer_depuis_competence, afficher_resultat
+
     for i, question in enumerate(questions, start=1):
         q_type = question.get("type")
 
         print(f"\n--- Question {i}/{total} ---")
-
-        from LLM_as_Evaluator import diagnostiquer_depuis_competence, afficher_resultat
 
         if q_type == "qcm":
             correct, chosen = ask_qcm_question(i, total, question)
@@ -964,7 +1020,7 @@ def run_test(questions: list[dict]) -> None:
                 if correct:
                     competences_dict = {comp["code"]: True}
                     afficher_competences_dict(competences_dict)
-                    update_scores(REFERENTIEL, q_format, competences_dict)
+                    _update(q_format, competences_dict)
                 elif chosen:
                     try:
                         resultat = diagnostiquer_depuis_competence(
@@ -976,10 +1032,10 @@ def run_test(questions: list[dict]) -> None:
                             competence_cible=comp,
                         )
                         afficher_resultat(resultat)
-                        update_scores(REFERENTIEL, q_format, resultat["competences_dict"])
+                        _update(q_format, resultat["competences_dict"])
                     except Exception as e:
                         print(f"  [Diagnostic indisponible : {e}]")
-                        update_scores(REFERENTIEL, q_format, {comp["code"]: False})
+                        _update(q_format, {comp["code"]: False})
 
         elif q_type == "qro":
             correct, user_answer = ask_qro_question(i, total, question)
@@ -989,7 +1045,7 @@ def run_test(questions: list[dict]) -> None:
                 if correct:
                     competences_dict = {comp["code"]: True}
                     afficher_competences_dict(competences_dict)
-                    update_scores(REFERENTIEL, q_format, competences_dict)
+                    _update(q_format, competences_dict)
                 elif user_answer:
                     try:
                         resultat = diagnostiquer_depuis_competence(
@@ -1001,10 +1057,10 @@ def run_test(questions: list[dict]) -> None:
                             competence_cible=comp,
                         )
                         afficher_resultat(resultat)
-                        update_scores(REFERENTIEL, q_format, resultat["competences_dict"])
+                        _update(q_format, resultat["competences_dict"])
                     except Exception as e:
                         print(f"  [Diagnostic indisponible : {e}]")
-                        update_scores(REFERENTIEL, q_format, {comp["code"]: False})
+                        _update(q_format, {comp["code"]: False})
 
         elif q_type == "sbs":
             score_ex, total_ex, student_answers = ask_sbs_exercice(i, total, question)
@@ -1013,7 +1069,7 @@ def run_test(questions: list[dict]) -> None:
             if score_ex == total_ex:
                 competences_dict = {c["code"]: True for c in comps}
                 afficher_competences_dict(competences_dict)
-                update_scores(REFERENTIEL, q_format, competences_dict)
+                _update(q_format, competences_dict)
             elif student_answers and comps:
                 reponse_correcte = "\n".join(f"Étape {j}: {a}" for j, a in enumerate(question["correct_answers"], 1))
                 reponse_etudiant = "\n".join(f"Étape {j}: {a}" for j, a in enumerate(student_answers, 1))
@@ -1030,13 +1086,16 @@ def run_test(questions: list[dict]) -> None:
                         )
                         competences_dict.update(res["competences_dict"])
                     afficher_resultat(res)
-                    update_scores(REFERENTIEL, q_format, competences_dict)
+                    _update(q_format, competences_dict)
                 except Exception as e:
                     print(f"  [Diagnostic indisponible : {e}]")
-                    update_scores(REFERENTIEL, q_format, {c["code"]: False for c in comps})
+                    _update(q_format, {c["code"]: False for c in comps})
 
         else:
             print(f"Type de question inconnu : {q_type}")
+
+    if scores_initiaux:
+        afficher_bilan(REFERENTIEL, scores_initiaux)
 
 
 # ─── ARGPARSE ─────────────────────────────────────────────────────────────────

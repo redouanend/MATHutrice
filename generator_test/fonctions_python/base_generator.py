@@ -294,14 +294,12 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
     competences = notion["competences"]
 
     competences_niveau = [
-        c for c in competences 
+        c for c in competences
         if c["niveau"] == niveau_eleve
     ]
 
-    print("les comp du niveau sont:", competences_niveau)
-
     if not competences_niveau:
-        return []
+        return [] if type_exercice == "sbs" else None
 
     nb_acquises = sum(
         1 for c in competences_niveau 
@@ -336,24 +334,9 @@ def choisir_competence(notion: dict, type_exercice: str, niveau_eleve: str):
     ]
 
     if type_exercice in ["qcm", "qro"]:
-<<<<<<< HEAD
         return random.choice(competences_candidates) if competences_candidates else None
-=======
-        print("qcm/qro candidates :", competences_candidates)
-
-        if competences_candidates:
-            competence_choisie = [random.choice(competences_candidates)]
-            print("compétence choisie :", competence_choisie)
-            return competence_choisie
-        else:
-            return []
->>>>>>> 943a864e86c43a587f17e907a5ecc0629102c703
 
     if type_exercice == "sbs":
-<<<<<<< HEAD
-=======
-        print("sbs candidates :", competences_candidates)
->>>>>>> 943a864e86c43a587f17e907a5ecc0629102c703
         return competences_candidates
 
 # DICTIONNAIRE FICTIF TEMPORAIRE avec compétences evaluées dans une questions donnée et lesquelles sont bonnes ou fausses
@@ -412,23 +395,28 @@ def update_scores(REFERENTIEL, question_format, competences_dict):
     niveau_question = question_format["niveau"]
     bonus, malus = scoring_rules[type_question][niveau_question]
 
+    anciens_scores = {}
+    for notion in REFERENTIEL.values():
+        for competence in notion["competences"]:
+            if competence["code"] in competences_dict:
+                anciens_scores[competence["code"]] = round(competence["score"], 3)
+
     for notion in REFERENTIEL.values():
         for competence in notion["competences"]:
             code_competence = competence["code"]
-
-            # VÉRIFICATION :
-            # la compétence a-t-elle été évaluée
-            # dans cette question ?
             if code_competence in competences_dict:
-                # SI RÉPONSE CORRECTE
-
                 if competences_dict[code_competence] is True:
                     competence["score"] += bonus
-
-                # SI RÉPONSE FAUSSE
                 else:
                     competence["score"] += malus
-    return REFERENTIEL
+
+    nouveaux_scores = {}
+    for notion in REFERENTIEL.values():
+        for competence in notion["competences"]:
+            if competence["code"] in competences_dict:
+                nouveaux_scores[competence["code"]] = round(competence["score"], 3)
+
+    return REFERENTIEL, anciens_scores, nouveaux_scores
 
 
 ################# TEST de la fonction update_scores #################### Test OK
