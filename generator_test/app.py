@@ -1,3 +1,4 @@
+from __future__ import annotations
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,14 +10,14 @@ import os
 from test_format_generator.QCM import generate_qcm_statement
 
 # from generator_test.fonctions_python.test_entrainement import generate_mixed_test
-from __future__ import annotations
-
 from typing import Optional, List
 from datetime import datetime
 from decimal import Decimal
+from sqlmodel import SQLModel, Field, Relationship, create_engine, Session, select
+from dotenv import load_dotenv
 
-from sqlmodel import SQLModel, Field, Relationship, create_engine
 
+load_dotenv()
 
 app = FastAPI()
 
@@ -295,6 +296,20 @@ class Exercice(SQLModel, table=True):
 engine = create_engine(os.getenv("DATABASE_URL"))
 
 
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
+
+
+with Session(engine) as session:
+    notions = session.exec(select(Notion)).all()
+    print(notions)
+
+exit()
 # ── Pages HTML existantes ─────────────────────────────────────────────────────
 
 
