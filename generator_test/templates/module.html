@@ -230,7 +230,7 @@
 <!-- ── HEADER ── -->
 <div class="header">
   <div class="header-inner">
-    <a class="back-btn" href="/">
+    <a class="back-btn" href=".">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M10 3L5 8l5 5"/>
       </svg>
@@ -386,7 +386,7 @@ historyData.forEach(item => {
 async function startTraining() {
   const titre = document.querySelector('.module-title').textContent.trim();
   // Redirige vers qcm.html en passant la notion dans l'URL
-  window.location.href = `/qcm?notion=${encodeURIComponent(titre)}&niveau=${encodeURIComponent(NIVEAU)}&n=9`;
+  window.location.href = `qcm?notion=${encodeURIComponent(titre)}&niveau=${encodeURIComponent(NIVEAU)}&n=9`;
 }
 
 function showToast(msg, isError = false) {

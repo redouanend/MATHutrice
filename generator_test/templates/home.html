@@ -585,7 +585,7 @@
       MODULES.forEach((m, i) => {
         const card = document.createElement('a');
         card.className = 'module-card';
-        card.href = `/module.html?id=${m.id}`;
+        card.href = `module.html?id=${m.id}`;
         const starsHTML = [0,1,2].map(() => getStarSVG('empty')).join('');
         card.innerHTML = `
           <div class="module-icon">${ICONS[i % ICONS.length]}</div>
@@ -602,15 +602,15 @@
       const inp = document.getElementById('chatInput');
       const text = inp.value.trim();
       if (!text) return;
-      window.location.href = `/chat?q=${encodeURIComponent(text)}`;
+      window.location.href = `chat?q=${encodeURIComponent(text)}`;
     }
 
     function showMsgsArea() {}
     function hideMsgsArea() {}
     function renderMsgs() {}
     function scrollBot() {}
-    function newChat() { window.location.href = '/chat'; }
-    function loadConv(id) { window.location.href = '/chat?conv=' + id; }
+    function newChat() { window.location.href = 'chat'; }
+    function loadConv(id) { window.location.href = 'chat?conv=' + id; }
     function save() {}
     function updateHist() {
       const list = document.getElementById('histList');

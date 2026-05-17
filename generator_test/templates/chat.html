@@ -951,7 +951,7 @@
     <div class="hist" id="histList"></div>
 
     <div class="sb-foot">
-      <a href="/">
+      <a href=".">
         <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
           <path d="M3 12l9-9 9 9M5 10v10h14V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" />
@@ -1011,7 +1011,7 @@
 
   <script>
     // ===== STATE =====
-    const API = '/chat/stream';
+    const API = 'chat/stream';
     let convs = JSON.parse(localStorage.getItem('math_convs') || '[]');
     let curId = null;
     let busy = false;
@@ -1082,7 +1082,7 @@
           Modules disponibles
         </div>
         <div class="mods-grid">${cards}</div>
-        <button class="btn-more" onclick="window.location.href='/module.html?id=${m.id}'">Voir plus de modules
+        <button class="btn-more" onclick="window.location.href='.'">Voir plus de modules
           <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -1200,7 +1200,7 @@
       document.getElementById('topTitle').textContent = 'MATHutrice';
       showWelcome(); updateHist();
       // Reset chatbot history on server
-      fetch('/chat/reset', { method: 'POST' }).catch(() => { });
+      fetch('chat/reset', { method: 'POST' }).catch(() => { });
     }
 
     function loadConv(id) {
@@ -1255,14 +1255,17 @@
     function autoH(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
     function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
 
-    // ===== INIT =====
+  // ===== INIT =====
     showWelcome(); updateHist();
 
     const qParam = new URLSearchParams(window.location.search).get('q');
     if (qParam) {
-      window.history.replaceState({}, '', '/chat');
-      document.getElementById('chatInput').value = qParam;
-      setTimeout(() => send(), 500);
+      window.history.replaceState({}, '', 'chat');
+      setTimeout(() => {
+        const inp = document.getElementById('chatInput');
+        inp.value = qParam;
+        send();
+      }, 1000);
     }
   </script>
 </body>
