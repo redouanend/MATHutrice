@@ -236,9 +236,8 @@
       </svg>
       Retour aux modules
     </a>
-
-    <h1 class="module-title" id="moduleTitle">Trigonométrie</h1>
-    <p class="module-subtitle">Maîtrisez les fonctions sin, cos et tan, les identités remarquables et leurs applications en géométrie et analyse.</p>
+    {% set title, description = notion %}
+    <h1 class="module-title" id="moduleTitle">{{ title }}</h1>
 
     <div class="progress-header">
       <div class="progress-info">
@@ -259,7 +258,7 @@
 <div class="main">
 
   <div class="desc-card">
-    <p>Ce module couvre les <strong>bases de la trigonométrie</strong> nécessaires en première année à l'EPF en formation technologique. Vous y trouverez des exercices progressifs : exercices pour tester vos connaissances, step-by-step pour l'approfondissement, et questions ouvertes pour mémoriser rapidement les formules clés et les notions de cours. Chaque activité contribue à votre progression et vous permet d'identifier vos points faibles dans l'optique de les améliorer.</p>
+    <p>{{description}}</p>
   </div>
 
   <!-- Conteneur pour QCM -->

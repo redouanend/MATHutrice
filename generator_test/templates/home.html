@@ -376,50 +376,62 @@
   <script>
     //data simul des modules
     //plus tard -> back / json / bdd
-    const modules = [
-      {
-        name:"Trigonométrie",
-        subtitle:"Fonctions, cercle trigo, identités",
-        stars:2,
-        totalStars:3,
-        link:"module.html?module=trigonométrie&niveau=intermédiaire"
-      },
-      {
-        name:"Fractions",
-        subtitle:"Calculs, simplification, priorités",
-        stars:3,
-        totalStars:3,
-        link:"module.html?module=fractions&niveau=intermédiaire"
-      },
-      {
-        name:"Équations",
-        subtitle:"1er degré, 2nd degré, résolution",
-        stars:1,
-        totalStars:3,
-        link:"module.html?module=équations&niveau=intermédiaire"
-      },
-      {
-        name:"Algèbre",
-        subtitle:"Calcul littéral, factos, dvpt",
-        stars:2,
-        totalStars:3,
-        link:"module.html?module=algèbre&niveau=intermédiaire"
-      },
-      {
-        name:"Géométrie",
-        subtitle:"Angles, triangles, longueurs",
-        stars:0,
-        totalStars:3,
-        link:"module.html?module=géométrie&niveau=intermédiaire"
-      },
-      {
-        name:"Suites",
-        subtitle:"Arith., géom., récurrence",
-        stars:0,
-        totalStars:3,
-        link:"module.html?module=suites&niveau=intermédiaire"
-      }
-    ];
+
+      const modules = [
+        {% for notion_id, title in notions %}
+    {
+    name: "{{ title }}",
+    stars: 0,
+    totalStars: 3,
+    link: "module.html?id={{ notion_id }}"
+  },
+  {% endfor %}
+];
+
+    // const modules = [
+    //   {
+    //     name:"Trigonométrie",
+    //     subtitle:"Fonctions, cercle trigo, identités",
+    //     stars:2,
+    //     totalStars:3,
+    //     link:"module.html?module=trigonométrie&niveau=intermédiaire"
+    //   },
+    //   {
+    //     name:"Fractions",
+    //     subtitle:"Calculs, simplification, priorités",
+    //     stars:3,
+    //     totalStars:3,
+    //     link:"module.html?module=fractions&niveau=intermédiaire"
+    //   },
+    //   {
+    //     name:"Équations",
+    //     subtitle:"1er degré, 2nd degré, résolution",
+    //     stars:1,
+    //     totalStars:3,
+    //     link:"module.html?module=équations&niveau=intermédiaire"
+    //   },
+    //   {
+    //     name:"Algèbre",
+    //     subtitle:"Calcul littéral, factos, dvpt",
+    //     stars:2,
+    //     totalStars:3,
+    //     link:"module.html?module=algèbre&niveau=intermédiaire"
+    //   },
+    //   {
+    //     name:"Géométrie",
+    //     subtitle:"Angles, triangles, longueurs",
+    //     stars:0,
+    //     totalStars:3,
+    //     link:"module.html?module=géométrie&niveau=intermédiaire"
+    //   },
+    //   {
+    //     name:"Suites",
+    //     subtitle:"Arith., géom., récurrence",
+    //     stars:0,
+    //     totalStars:3,
+    //     link:"module.html?module=suites&niveau=intermédiaire"
+    //   }
+    // ];
 
     //refs dom
     const modulesGrid = document.getElementById("modulesGrid");
@@ -453,7 +465,6 @@
       card.innerHTML = `
         <div class="module-left">
           <div class="module-name">${module.name}</div>
-          <div class="module-sub">${module.subtitle}</div>
         </div>
         <div class="stars">${starsHTML}</div>
       `;
