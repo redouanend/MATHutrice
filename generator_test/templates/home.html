@@ -534,11 +534,6 @@
   </div>
 
   <script>
-    const API = '/chat/stream';
-    let convs = JSON.parse(localStorage.getItem('math_convs') || '[]');
-    let curId = null;
-    let busy = false;
-
     const MODULES = [
       {% for notion_id, title in notions %}
       { id: "{{ notion_id }}", name: "{{ title }}" },
@@ -546,18 +541,6 @@
     ];
 
     const ICONS = ['sin', 'f(x)', 'x²', 'Aa', 'log', 'a/b', '∑', 'π', 'dx', '∫'];
-    const DESCS = [
-      'Fonctions trigonométriques, cercles, identités remarquables...',
-      'Résolution d\'équations, systèmes, inéquations dans ℝ...',
-      'Factorisation, racines, théorème du reste, identités...',
-      'Développement, factorisation, simplification d\'expressions...',
-      'Propriétés, équations, inéquations logarithmiques...',
-      'Calculs, simplifications, propriétés des racines...',
-      'Suites arithmétiques, géométriques, récurrence...',
-      'Vecteurs, produit scalaire, droites et plans...',
-      'Dérivées, primitives, intégrales définies...',
-      'Probabilités, statistiques, lois de distribution...',
-    ];
 
     marked.setOptions({ breaks: true, gfm: true, headerIds: false, mangle: false });
 
@@ -608,7 +591,6 @@
           <div class="module-icon">${ICONS[i % ICONS.length]}</div>
           <div class="module-body">
             <div class="module-name">${escHtml(m.name)}</div>
-            <div class="module-desc">${DESCS[i % DESCS.length]}</div>
           </div>
           <div class="module-stars">${starsHTML}</div>
         `;
@@ -619,138 +601,21 @@
     async function send() {
       const inp = document.getElementById('chatInput');
       const text = inp.value.trim();
-      if (!text || busy) return;
-
-      if (!curId) {
-        curId = 'c_' + Date.now();
-        convs.unshift({ id: curId, title: text.slice(0, 40) + (text.length > 40 ? '...' : ''), messages: [], at: new Date().toISOString() });
-      }
-
-      const conv = convs.find(c => c.id === curId);
-      conv.messages.push({ role: 'user', content: text });
-      inp.value = ''; autoH(inp);
-
-      showMsgsArea();
-      renderMsgs();
-      updateHist(); save();
-
-      const wrap = document.getElementById('msgsWrap');
-      const tid = document.createElement('div');
-      tid.className = 'msg assistant'; tid.id = 'tid';
-      tid.innerHTML = '<div class="msg-av">M</div><div class="msg-body"><div class="msg-name">MATHutrice</div><div class="msg-text"><div class="dots"><span></span><span></span><span></span></div></div></div>';
-      wrap.appendChild(tid); scrollBot();
-
-      busy = true;
-      document.getElementById('btnSend').disabled = true;
-      let full = '';
-
-      try {
-        const res = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text }),
-        });
-
-        if (!res.ok) throw new Error('Server error ' + res.status);
-
-        const t = document.getElementById('tid'); if (t) t.remove();
-        const msgEl = document.createElement('div');
-        msgEl.className = 'msg assistant';
-        msgEl.innerHTML = '<div class="msg-av">M</div><div class="msg-body"><div class="msg-name">MATHutrice</div><div class="msg-text" id="stream-out"></div></div>';
-        wrap.appendChild(msgEl);
-
-        const bodyEl = document.getElementById('stream-out');
-        const reader = res.body.getReader();
-        const dec = new TextDecoder();
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = dec.decode(value, { stream: true });
-          for (const line of chunk.split('\n')) {
-            if (line.startsWith('data: ')) {
-              const d = line.slice(6);
-              if (d === '[DONE]') break;
-              full += d;
-              bodyEl.innerHTML = md(full);
-              scrollBot();
-            }
-          }
-        }
-
-        bodyEl.innerHTML = md(full);
-        renderMath(bodyEl);
-        conv.messages.push({ role: 'assistant', content: full });
-
-      } catch (err) {
-        const t = document.getElementById('tid'); if (t) t.remove();
-        full = 'Erreur de connexion. Vérifiez que le serveur FastAPI tourne.';
-        conv.messages.push({ role: 'assistant', content: full });
-        renderMsgs();
-      }
-
-      busy = false;
-      document.getElementById('btnSend').disabled = false;
-      updateHist(); save();
+      if (!text) return;
+      window.location.href = `/chat?q=${encodeURIComponent(text)}`;
     }
 
-    function showMsgsArea() {
-      document.getElementById('msgsArea').classList.add('visible');
-      document.getElementById('pageTitle').style.display = 'none';
-      document.getElementById('helperText').style.display = 'none';
-    }
-
-    function hideMsgsArea() {
-      document.getElementById('msgsArea').classList.remove('visible');
-      document.getElementById('pageTitle').style.display = '';
-      document.getElementById('helperText').style.display = '';
-    }
-
-    function renderMsgs() {
-      const wrap = document.getElementById('msgsWrap');
-      const conv = convs.find(c => c.id === curId);
-      if (!conv || conv.messages.length === 0) { wrap.innerHTML = ''; return; }
-      wrap.innerHTML = conv.messages.map(m => `
-        <div class="msg ${m.role}">
-          <div class="msg-av">${m.role === 'user' ? 'T' : 'M'}</div>
-          <div class="msg-body">
-            <div class="msg-name">${m.role === 'user' ? 'Toi' : 'MATHutrice'}</div>
-            <div class="msg-text">${m.role === 'assistant' ? md(m.content) : escHtml(m.content)}</div>
-          </div>
-        </div>`).join('');
-      wrap.querySelectorAll('.msg.assistant .msg-text').forEach(el => renderMath(el));
-      scrollBot();
-    }
-
-    function scrollBot() {
-      document.querySelector('.scroll-area').scrollTop = document.querySelector('.scroll-area').scrollHeight;
-    }
-
-    function newChat() {
-      curId = null;
-      document.getElementById('topTitle').textContent = 'Tuteur IA';
-      hideMsgsArea();
-      document.getElementById('msgsWrap').innerHTML = '';
-      updateHist();
-      fetch('/chat/reset', { method: 'POST' }).catch(() => {});
-    }
-
-    function loadConv(id) {
-      curId = id;
-      const conv = convs.find(c => c.id === id);
-      if (conv) {
-        document.getElementById('topTitle').textContent = conv.title;
-        showMsgsArea();
-        renderMsgs();
-      }
-      updateHist();
-    }
-
-    function save() { localStorage.setItem('math_convs', JSON.stringify(convs)); }
-
+    function showMsgsArea() {}
+    function hideMsgsArea() {}
+    function renderMsgs() {}
+    function scrollBot() {}
+    function newChat() { window.location.href = '/chat'; }
+    function loadConv(id) { window.location.href = '/chat?conv=' + id; }
+    function save() {}
     function updateHist() {
       const list = document.getElementById('histList');
-      const items = convs.filter(c => c.messages.length > 0);
+      const convs = JSON.parse(localStorage.getItem('math_convs') || '[]');
+      const items = convs.filter(c => c.messages && c.messages.length > 0);
       if (!items.length) {
         list.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(255,255,255,0.35);font-size:12px;">Aucune conversation</div>';
         return;
@@ -758,9 +623,8 @@
       list.innerHTML = items.map(c => {
         const last = c.messages[c.messages.length - 1];
         const prev = last ? last.content.substring(0, 30) + '...' : '';
-        const isOn = c.id === curId ? 'on' : '';
         return `
-          <div class="hi ${isOn}" onclick="loadConv('${c.id}')">
+          <div class="hi" onclick="loadConv('${c.id}')">
             <div class="hi-icon">
               <svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
