@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,8 +11,7 @@ from database import engine, get_session, Session
 from sqlmodel import SQLModel, select
 import models
 import os
-
-
+from fonctions_python.chatbot import chat, chat_stream, reset_conversation
 
 
 def create_db_and_tables():
@@ -44,24 +43,29 @@ app.mount(
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 
-
-
-
 # ── Pages HTML existantes ─────────────────────────────────────────────────────
 
 
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request, session: Session = Depends(get_session)):
     notions = session.exec(select(models.Notion.notion_id, models.Notion.title)).all()
-    return templates.TemplateResponse("home.html", {"request": request,"notions" : notions})
+    return templates.TemplateResponse(
+        "home.html", {"request": request, "notions": notions}
+    )
 
 
 @app.get("/module.html", response_class=HTMLResponse)
-async def module_page(request: Request, id: str, session: Session = Depends(get_session)):
+async def module_page(
+    request: Request, id: str, session: Session = Depends(get_session)
+):
     notion = session.exec(
-        select(models.Notion.title, models.Notion.description).where(models.Notion.notion_id == id)
+        select(models.Notion.title, models.Notion.description).where(
+            models.Notion.notion_id == id
+        )
     ).first()
-    return templates.TemplateResponse("module.html", {"request":request, "notion":notion} )
+    return templates.TemplateResponse(
+        "module.html", {"request": request, "notion": notion}
+    )
 
 
 @app.get("/index", response_class=HTMLResponse)
@@ -72,6 +76,14 @@ async def index_page(request: Request):
 @app.get("/qcm", response_class=HTMLResponse)
 async def qcm_page(request: Request):
     return templates.TemplateResponse("qcm.html", {"request": request})
+
+
+@app.get("/chat", response_class=HTMLResponse)
+async def chat_page(request: Request, session: Session = Depends(get_session)):
+    notions = session.exec(select(models.Notion.notion_id, models.Notion.title)).all()
+    return templates.TemplateResponse(
+        "chat.html", {"request": request, "notions": notions}
+    )
 
 
 # ── Modèles Pydantic ──────────────────────────────────────────────────────────
@@ -85,6 +97,10 @@ class QCMRequest(BaseModel):
     notion: str = "trigonométrie"
     niveau: str = "intermédiaire"
     n: int = 9
+
+
+class ChatRequest(BaseModel):
+    message: str
 
 
 # ── Endpoint existant (conservé tel quel) ─────────────────────────────────────
@@ -125,6 +141,49 @@ class QCMRequest(BaseModel):
 #       ...
 #     ]
 #   }
+
+
+# ── ENDPOINT CHAT STREAMING ───────────────────────────────────────────────────
+
+
+@app.post("/chat/stream")
+async def chat_stream_endpoint(data: ChatRequest):
+    """Endpoint streaming pour le chat"""
+
+    def generate():
+        for chunk in chat_stream(data.message):
+            yield f"data: {chunk}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
+@app.post("/chat/reset")
+async def chat_reset_endpoint():
+    """Reinitialise l'historique de conversation du chatbot"""
+    reset_conversation()
+    return {"ok": True, "message": "Conversation reinitialisee"}
+
+
+@app.post("/chat/complete")
+async def chat_complete_endpoint(data: ChatRequest):
+    """Endpoint non-streaming - retourne la reponse complete"""
+    try:
+        response = chat(data.message)
+        return {"ok": True, "response": response}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"ok": False, "error": str(e)})
+
+
+# ── QCM generation ───────────────────────────────────────────────────
 
 
 @app.post("/generate_qcm")
