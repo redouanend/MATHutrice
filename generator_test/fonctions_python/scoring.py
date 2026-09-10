@@ -12,6 +12,8 @@ Voir CONTEXT.md (« Level », « Compétence maîtrisée ») et
 docs/adr/0001-damped-step-scoring-update.md.
 """
 
+from fonctions_python.utils import clamp_score
+
 # Seuils Level (bucket d'affichage, dérivé du Score seul)
 LEVEL_FAIBLE_MAX = 0.4  # score < 0.4           → faible
 LEVEL_MOYEN_MAX = 0.75  # 0.4 ≤ score < 0.75    → moyen
@@ -29,7 +31,7 @@ def compute_level_and_mastery(score, attempts_count):
     Paramètres
     ----------
     score : float | Decimal | int
-        Le Score de la Compétence, dans [0, 1].
+        Le Score de la Compétence. Borné dans [0, 1] via ``clamp_score``.
     attempts_count : int
         Le nombre de fois où la Compétence a été tentée (après prise en
         compte de la réponse courante s'il y en a une).
@@ -42,7 +44,7 @@ def compute_level_and_mastery(score, attempts_count):
                  | "avance" (score ≥ 0.75)
         mastered : True ssi score ≥ 0.8 ET attempts_count ≥ 3
     """
-    score = float(score)
+    score = clamp_score(score)
 
     if score < LEVEL_FAIBLE_MAX:
         level = "faible"

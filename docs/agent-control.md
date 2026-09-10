@@ -1,0 +1,9 @@
+# Agent control — Lab 2
+
+The `test-coverage` skill (`.claude/skills/test-coverage/SKILL.md`) fires when a task means **adding or changing a function or a component** in the code: a new helper function, a new endpoint, or a change to the signature or behaviour of a public function in `generator_test/fonctions_python/` or `lacune_evaluation/`. Its first instruction is then to create or update the matching test file in the mirror tree under `generator_test/tests/` (same relative path, filename prefixed with `test_`), and the task is only "done" once every new public function has a test and `python -m pytest` passes. It should **not** fire for read-only work or work that adds no new function: for example fixing a typo in a comment in `scoring.py`, renaming a local variable, or explaining how `compute_level_and_mastery` is used — none of these create code that needs covering, so touching the tests would just be noise.
+
+The `PreToolUse` hook (`.claude/settings.json` + `.claude/hooks/block-env-edit.py`) blocks any attempt to `Edit`, `Write`, or `MultiEdit` a `.env` or `.env.*` file at the root of the repository: the hook exits with code 2, which **cancels** the tool call before anything is written and sends the agent a message explaining that environment secrets are only changed by a human, by hand. A plain instruction in `CLAUDE.md` ("never modify `.env`") is not enough, because it relies on the model's judgement on every turn: it is followed nine times out of ten, but the tenth time — long context, the rule buried far back, an urgent task where editing `.env` looks like "the obvious fix" — the agent works around it, and it only takes one time to commit an API key. The hook makes sure the action is mechanically impossible, whatever state the model is in.
+
+---
+
+AI helped me write this document, but I reviewed and (manually modified where necessary) everything.

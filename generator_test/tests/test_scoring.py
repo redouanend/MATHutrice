@@ -75,6 +75,21 @@ def test_accepts_decimal_score():
     assert mastered is True
 
 
+@pytest.mark.parametrize(
+    "score, expected_level, expected_mastered",
+    [
+        (1.5, "avance", True),      # score > 1 borné à 1.0
+        (2, "avance", True),
+        (-0.5, "faible", False),    # score < 0 borné à 0.0
+        (-3, "faible", False),
+    ],
+)
+def test_out_of_range_score_is_clamped(score, expected_level, expected_mastered):
+    level, mastered = compute_level_and_mastery(score, attempts_count=3)
+    assert level == expected_level
+    assert mastered is expected_mastered
+
+
 # ─── Intégration : seeding initial ──────────────────────────────────────────
 
 
