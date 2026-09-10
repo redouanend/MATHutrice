@@ -25,6 +25,7 @@ from main import (
     generate_mixed_test,
     generate_exercise_randomly,
 )
+from fonctions_python.scoring import compute_level_and_mastery
 
 
 # ─── NIVEAU AUTO ──────────────────────────────────────────────────────────────
@@ -122,6 +123,7 @@ def init_progressions_for_user(sso_id: str, db: Session) -> None:
     Score initial = 0.5 (niveau intermédiaire inconnu).
     """
     now = datetime.utcnow()
+    initial_level, _ = compute_level_and_mastery(0.5, 0)
 
     for notion_key, notion_data in REFERENTIEL.items():
         for comp in notion_data["competences"]:
@@ -139,7 +141,7 @@ def init_progressions_for_user(sso_id: str, db: Session) -> None:
                 progression_id=f"{sso_id}_{comp['code']}",
                 score=Decimal("0.50"),
                 updated_at=now,
-                level="moyen",
+                level=initial_level,
                 attempts_count=0,
                 competence_id=comp["code"],
                 sso_id=sso_id,
@@ -162,6 +164,11 @@ def persist_score_update(
     """
     Applique les règles de scoring de update_scores() et persiste
     les nouveaux scores en base de données.
+
+    Retourne, par code de compétence, un dict
+    ``{"score": float, "level": str, "mastered": bool}`` — le Level et le
+    flag Maîtrisé sont calculés via ``compute_level_and_mastery`` (source de
+    vérité unique) sur le Score clampé et l'``attempts_count`` mis à jour.
     """
     from fonctions_python.base_generator import update_scores
 
@@ -205,15 +212,10 @@ def persist_score_update(
     # Clamp scores entre 0.0 et 1.0 et persister
     now = datetime.utcnow()
 
+    results = {}
+
     for code, new_score in nouveaux_scores.items():
         clamped = max(0.0, min(1.0, new_score))
-
-        if clamped < 0.4:
-            level = "faible"
-        elif clamped < 0.75:
-            level = "moyen"
-        else:
-            level = "avance"
 
         prog = db.exec(
             select(models.Progression).where(
@@ -222,12 +224,14 @@ def persist_score_update(
             )
         ).first()
 
+        attempts_count = (prog.attempts_count + 1) if prog else 1
+        level, mastered = compute_level_and_mastery(clamped, attempts_count)
+
         if prog:
             prog.score = Decimal(str(round(clamped, 2)))
-            prog.level = level
             prog.updated_at = now
-            prog.attempts_count += 1
-            db.add(prog)
+            prog.attempts_count = attempts_count
+            prog.level = level
         else:
             # Sécurité : créer si absent (ne devrait pas arriver après init)
             prog = models.Progression(
@@ -235,15 +239,22 @@ def persist_score_update(
                 score=Decimal(str(round(clamped, 2))),
                 updated_at=now,
                 level=level,
-                attempts_count=1,
+                attempts_count=attempts_count,
                 competence_id=code,
                 sso_id=sso_id,
             )
-            db.add(prog)
+
+        db.add(prog)
+
+        results[code] = {
+            "score": clamped,
+            "level": level,
+            "mastered": mastered,
+        }
 
     db.commit()
 
-    return {code: max(0.0, min(1.0, score)) for code, score in nouveaux_scores.items()}
+    return results
 
 
 # ─── GÉNÉRATION POSITIONNEMENT ────────────────────────────────────────────────

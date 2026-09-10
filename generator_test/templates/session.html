@@ -1410,10 +1410,13 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
-        function checkMastery(newScores, comp) {
-            if (!newScores || !comp) return;
+        function checkMastery(payload, comp) {
+            // Le backend est la source de vérité : on lit le flag "mastered"
+            // calculé par compute_level_and_mastery, on ne recalcule aucun seuil ici.
+            const mastery = payload && payload.mastery;
+            if (!mastery || !comp) return;
             const list = Array.isArray(comp) ? comp : [comp];
-            for (const c of list) { if (c && newScores[c.code] >= 1.0) { setTimeout(() => animateMastery(c.nom), 400); break; } }
+            for (const c of list) { if (c && mastery[c.code] && mastery[c.code].mastered) { setTimeout(() => animateMastery(c.nom), 400); break; } }
         }
 
         // ─── LOCK / UNLOCK ────────────────────────────────────────────────
@@ -1746,7 +1749,7 @@
         async function submitAnswer(competencesDict, qType, qNiveau) {
             const clean = {}; for (const [k, v] of Object.entries(competencesDict)) { if (k && k !== 'undefined') clean[k] = v; }
             if (Object.keys(clean).length === 0) return null;
-            try { const res = await fetch('/session/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notion_key: NOTION_KEY, competences_dict: clean, question_type: qType, question_niveau: qNiveau || 'basique' }) }); const d = await res.json(); return d.new_scores || null; } catch (e) { return null; }
+            try { const res = await fetch('/session/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notion_key: NOTION_KEY, competences_dict: clean, question_type: qType, question_niveau: qNiveau || 'basique' }) }); const d = await res.json(); return d || null; } catch (e) { return null; }
         }
 
         // ─── NAVIGATION ───────────────────────────────────────────────────

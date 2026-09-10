@@ -961,6 +961,7 @@ async def reset_session_endpoint(
 
     try:
         from fonctions_python.main import REFERENTIEL
+        from fonctions_python.scoring import compute_level_and_mastery
         from decimal import Decimal
 
         if data.notion_key not in REFERENTIEL:
@@ -970,6 +971,7 @@ async def reset_session_endpoint(
 
         codes = [c["code"] for c in REFERENTIEL[data.notion_key]["competences"]]
         now = datetime.utcnow()
+        reset_level, _ = compute_level_and_mastery(0.5, 0)
 
         rows = session.exec(
             select(models.Progression).where(
@@ -980,7 +982,7 @@ async def reset_session_endpoint(
 
         for prog in rows:
             prog.score = Decimal("0.50")
-            prog.level = "moyen"
+            prog.level = reset_level
             prog.attempts_count = 0
             prog.updated_at = now
             session.add(prog)
@@ -1177,7 +1179,14 @@ async def submit_answer_endpoint(
             question_niveau=data.question_niveau,
             db=session,
         )
-        return {"ok": True, "new_scores": result}
+        return {
+            "ok": True,
+            "new_scores": {code: r["score"] for code, r in result.items()},
+            "mastery": {
+                code: {"level": r["level"], "mastered": r["mastered"]}
+                for code, r in result.items()
+            },
+        }
     except Exception as e:
         return JSONResponse(status_code=500, content={"ok": False, "error": str(e)})
 
