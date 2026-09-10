@@ -47,7 +47,13 @@ def clean_json(raw: str) -> str:
     Supprime les balises markdown ```json / ``` que Mistral ajoute parfois
     malgré les instructions explicites dans le prompt.
     """
-    return re.sub(r"```json|```", "", raw).strip()
+    cleaned = re.sub(r"```json|```", "", raw).strip()
+    # Remplace les délimiteurs LaTeX par les nouveaux formats standards
+    # $$ ... $$ -> \[ ... \] (bloc)
+    cleaned = re.sub(r"\$\$(.*?)\$\$", r"\[\1\]", cleaned, flags=re.DOTALL)
+    # $ ... $ -> \( ... \) (inline)
+    cleaned = re.sub(r"\$(.*?)\$", r"\\(\1\\)", cleaned, flags=re.DOTALL)
+    return cleaned.strip()
 
 
 def parse_json(raw: str) -> dict:
